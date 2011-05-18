@@ -10,6 +10,19 @@ snow.ui.registerComponent("mainScreen",
 		return $e;
 	}, 
 	postDisplay: function(){
+		var component = this;
+		var $element = this.$element;
+		
+		$element.sTouch(".generateButton",function(e){
+			var $frtText = $("#frtText");
+			var $scdText = $("#scdText");
+			
+			var frtTextVal = $frtText.val();
+			
+			var scdTextVal = gei.generateValue(frtTextVal);
+			
+			$scdText.html("").val(scdTextVal);
+		});
 		
 	}
 });
@@ -17,7 +30,17 @@ snow.ui.registerComponent("mainScreen",
 </script>
 
 <script id="tmpl-mainScreen" type="text/html">
-<div id="mainFrame">
-
+<div class="mainScreen">
+	<div class="firstArea">
+		<textarea id="frtText" cols="50" rows="30"></textarea>
+	</div>
+	
+	<div class="generate">
+		<span class="generateButton">Generate</span>
+	</div>
+	
+	<div class="sencondArea">
+		<textarea id="scdText" cols="50" rows="30"></textarea>
+	</div>
 </div>	
 </script>

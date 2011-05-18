@@ -5,3 +5,31 @@
 
 html,body{height:100%}
 
+
+
+.mainScreen{
+	padding:0;
+	position:relative;
+}
+
+.mainScreen .firstArea{
+	position:relative;
+	float:left;
+	margin: 20px 20px 20px 20px;
+}
+
+.mainScreen .generate{
+	position:relative;
+	width: 100px;
+	float:left;
+	margin: 50px 20px 50px 20px;
+	text-align:center;
+	cursor: pointer;
+}
+
+.mainScreen .sencondArea{
+	position:relative;
+	float:left;
+	margin: 20px 20px 20px 20px;
+}
+
