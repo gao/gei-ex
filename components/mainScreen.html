@@ -1,0 +1,23 @@
+<script type="text/javascript">
+snow.ui.registerComponent("mainScreen", 
+	{
+    parent: "#page",
+	unique: true
+	}, 
+	{
+	build: function(){
+		var $e = $("#tmpl-mainScreen").tmpl({});
+		return $e;
+	}, 
+	postDisplay: function(){
+		
+	}
+});
+
+</script>
+
+<script id="tmpl-mainScreen" type="text/html">
+<div id="mainFrame">
+
+</div>	
+</script>

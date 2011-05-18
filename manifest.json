@@ -1,0 +1,13 @@
+{
+  "name": "GEI-EX",
+  "description": "Google energy innovation the chrome extension.",
+  "version": "0.1",
+  "app": {
+    "launch": {
+      "local_path": "main.html"
+    }
+  },
+  "permissions": [
+    "unlimitedStorage"
+  ]
+}
