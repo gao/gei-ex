@@ -5,9 +5,9 @@ gei.generateValue = function(text){
 	 if (text == null){
 		 return null;
 	 }else{ 
-		 var den_array = [];
-		 var text_array = [];
-		 var line = [];
+		 var den_array = new Array();
+		 var text_array = new Array();
+		 var line = new Array();
 		 var field = "";
 		 //is in double quotation marks
 		 var in_quata = false;
@@ -38,7 +38,7 @@ gei.generateValue = function(text){
 					 }	
 					 field = field + '\"';
 					 break;
-				 case '\r': //new line start
+				 case '\n': //new line start \r
 					 snow.log.info("--------------------------new line----");
 					 if (field.length > 0 || field_start){
 						 line.push(field);
@@ -48,9 +48,9 @@ gei.generateValue = function(text){
 					 line = [];
 					 field_start = true;
 					 // window £¬\r\n is together£¬so jump
-					 if (i < text.length - 1 && text[i + 1] == '\n'){
-						 i++;
-					 }
+//					 if (i < text.length - 1 && text[i + 1] == '\n'){
+//						 i++;
+//					 }
 					 break;
 				 default:
 					 field_start = false;
@@ -68,14 +68,87 @@ gei.generateValue = function(text){
 		 }    
 
 		 snow.log.info("============text_array.length:"+text_array.length);
-		 snow.log.info("============text_array:"+text_array);
+		 //snow.log.info("============text_array:"+text_array);
 
 		 //change the format to Denormalized
-		 for(var j = 0; j < text_array.length; j++){
-			 snow.log.info("============text_array[0].length:"+text_array[j].length);
+		 var firsLine = [];
+		 if(text_array.length > 0){
+			 var firstRow =  text_array[0];
+			 firsLine.push("Scenario");
+			 firsLine.push("Category");
+			 firsLine.push("SubCategory");
+			 firsLine.push("Name");
+			 for(var t = 2; t < firstRow.length; t++){
+				 firsLine.push(firstRow[t]);
+			 }
+			 firsLine.push("\n");
+		 }
+		 den_array.push(firsLine);
+		 
+		 snow.log.info("00====den_array:"+den_array);
+		 
+		 var scenario = text_array[0][1];
+		 snow.log.info("scenario:"+scenario);
+		 var currentCategory = "";
+		 var currentSubCategory = "";
+		 var name = "";
+		 for(var j = 2; j < text_array.length; j++){
+			 var newLine = new Array();
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 var nextRow2 = text_array[j+2];
 			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 newLine.push(scenario);
+				 newLine.push(currentCategory);
+				 newLine.push(currentSubCategory);
+				 for(var m = 1; m < row.length; m++){
+					 newLine.push(row[m]);
+				 }
+				 newLine.push("\n");
+				 den_array.push(newLine);
+			 }
+			 
+			 //the category or subcategory line
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
+				 currentCategory = row[1];
+				 snow.log.info("-------j::"+j+":::currentCategory:"+currentCategory);
+			 } 
+			 
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 currentSubCategory = row[1];
+				 snow.log.info("-------j::"+j+":::currentSubCategory:"+currentSubCategory);
+			 }
+			 
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
+				 currentSubCategory = currentCategory;
+				 snow.log.info("22-------j::"+j+":::currentSubCategory:"+currentSubCategory);
+			 }
+
+		 }
+		 
+		 var den_str = "";
+		 for(var a = 0; a < den_array.length; a++){
+			 den_str = den_str + den_array[a];
 		 }
     
-		 return text_array;
+		 return den_str;
 	 }
 };
+
+
+function notNullValueNum(textArray){
+	var num = 0;
+	for(var i = 0; i < textArray.length; i++){
+		if(textArray[i] != ""){
+			num++;
+		}
+	}
+	return num;
+}
