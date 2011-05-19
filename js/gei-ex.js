@@ -2,7 +2,7 @@ var gei = gei || {};
 
 gei.generateValue = function(text,frtColumnName){
 	
-	 if (text == null){
+	 if (text == ""){
 		 return null;
 	 }else{ 
 		 var den_array = new Array();
@@ -62,13 +62,13 @@ gei.generateValue = function(text,frtColumnName){
 			 text_array.push(line);
 		 }    
 
-		 snow.log.info("============text_array.length:"+text_array.length);
-		 //snow.log.info("============text_array:"+text_array);
-
 		 //change the format to Denormalized
 		 var firsLine = [];
 		 var firstRow = [];
+		 //here build the table title column
 		 if(text_array.length > 1){
+			 //sometimes in the csv file the first row only have S1 or S5,this is no use
+			 //so the first row should be the file title
 			 if(text_array[0][0] != ""){
 				 firstRow = text_array[1];
 			 }else{
@@ -88,7 +88,11 @@ gei.generateValue = function(text,frtColumnName){
 		 var scenario = firstRow[1];
 		 var currentCategory = "";
 		 var currentSubCategory = "";
-		 var name = "";
+		 
+		 //here build each line data
+		 //you will note here start with 2,
+		 //because the first line maybe is the null line and the second line maybe the column title
+		 //or the first line is the column title and the second line is null line
 		 for(var j = 2; j < text_array.length; j++){
 			 var newLine = new Array();
 			 var row = text_array[j];
@@ -115,17 +119,14 @@ gei.generateValue = function(text,frtColumnName){
 			 //the category or subcategory line
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
 				 currentCategory = row[1];
-				 snow.log.info("-------j::"+j+":::currentCategory:"+currentCategory);
 			 } 
 			 
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 currentSubCategory = row[1];
-				 snow.log.info("-------j::"+j+":::currentSubCategory:"+currentSubCategory);
 			 }
 			 
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
 				 currentSubCategory = currentCategory;
-				 snow.log.info("22-------j::"+j+":::currentSubCategory:"+currentSubCategory);
 			 }
 
 		 }
@@ -139,7 +140,12 @@ gei.generateValue = function(text,frtColumnName){
 	 }
 };
 
-
+/**
+ * this method is to count each line value number,judge whether the line is null line ,category line or data line
+ * num == 0 is null line ,num == 1 is category line ,num >1 is data line
+ * @param textArray
+ * @return
+ */
 function notNullValueNum(textArray){
 	var num = 0;
 	for(var i = 0; i < textArray.length; i++){
