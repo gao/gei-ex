@@ -12,6 +12,12 @@ html,body{height:100%}
 	position:relative;
 }
 
+.mainScreen .frtColumnName{
+	position:relative;
+	float:top;
+	margin: 20px 20px 20px 20px;
+}
+
 .mainScreen .firstArea{
 	position:relative;
 	float:left;

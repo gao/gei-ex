@@ -16,12 +16,16 @@ snow.ui.registerComponent("mainScreen",
 		$element.sTouch(".generateButton",function(e){
 			var $frtText = $("#frtText");
 			var $scdText = $("#scdText");
+			var $frtColumn = $("#frtColumnName");
 			
-			var frtTextVal = $frtText.val();
-			
-			var scdTextVal = gei.generateValue(frtTextVal);
-			
-			$scdText.html("").val(scdTextVal);
+			var frtColumnName = $frtColumn.val();
+			if(frtColumnName == ""){
+				alert("The First Column Name can not null!");
+			}else{
+				var frtTextVal = $frtText.val();
+				var scdTextVal = gei.generateValue(frtTextVal,frtColumnName);
+				$scdText.html("").val(scdTextVal);
+			}
 		});
 		
 	}
@@ -31,15 +35,21 @@ snow.ui.registerComponent("mainScreen",
 
 <script id="tmpl-mainScreen" type="text/html">
 <div class="mainScreen">
+	<div class="frtColumnName">
+		First Column Name:<input id="frtColumnName" name="frtColumnName" value=""/>
+	</div>
+	
 	<div class="firstArea">
+		Input TextArea:</br>
 		<textarea id="frtText" cols="50" rows="30"></textarea>
 	</div>
 	
 	<div class="generate">
-		<span class="generateButton">Generate</span>
+		<span class="generateButton"> Generate >> </span>
 	</div>
 	
 	<div class="sencondArea">
+		Output TextArea:</br>
 		<textarea id="scdText" cols="50" rows="30"></textarea>
 	</div>
 </div>	

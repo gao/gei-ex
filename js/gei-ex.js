@@ -1,6 +1,6 @@
 var gei = gei || {};
 
-gei.generateValue = function(text){
+gei.generateValue = function(text,frtColumnName){
 	
 	 if (text == null){
 		 return null;
@@ -39,7 +39,6 @@ gei.generateValue = function(text){
 					 field = field + '\"';
 					 break;
 				 case '\n': //new line start \r
-					 snow.log.info("--------------------------new line----");
 					 if (field.length > 0 || field_start){
 						 line.push(field);
 						 field = "";
@@ -47,10 +46,6 @@ gei.generateValue = function(text){
 					 text_array.push(line);
 					 line = [];
 					 field_start = true;
-					 // window £¬\r\n is together£¬so jump
-//					 if (i < text.length - 1 && text[i + 1] == '\n'){
-//						 i++;
-//					 }
 					 break;
 				 default:
 					 field_start = false;
@@ -72,9 +67,14 @@ gei.generateValue = function(text){
 
 		 //change the format to Denormalized
 		 var firsLine = [];
-		 if(text_array.length > 0){
-			 var firstRow =  text_array[0];
-			 firsLine.push("Scenario");
+		 var firstRow = [];
+		 if(text_array.length > 1){
+			 if(text_array[0][0] != ""){
+				 firstRow = text_array[1];
+			 }else{
+				 firstRow = text_array[0];
+			 }
+			 firsLine.push(frtColumnName);
 			 firsLine.push("Category");
 			 firsLine.push("SubCategory");
 			 firsLine.push("Name");
@@ -85,10 +85,7 @@ gei.generateValue = function(text){
 		 }
 		 den_array.push(firsLine);
 		 
-		 snow.log.info("00====den_array:"+den_array);
-		 
-		 var scenario = text_array[0][1];
-		 snow.log.info("scenario:"+scenario);
+		 var scenario = firstRow[1];
 		 var currentCategory = "";
 		 var currentSubCategory = "";
 		 var name = "";
