@@ -28,6 +28,38 @@ snow.ui.registerComponent("mainScreen",
 			}
 		});
 		
+		$element.sTouch(".import",function(e){
+			//start Read
+			var file = $("#file")[0].files[0];
+			var str = $("#file").val();
+			var pos = str.lastIndexOf(".");
+			var lastname = str.substring(pos,str.length)
+			
+			if (lastname.toLowerCase()!=".csv"){
+				alert("The file type must be .csv");
+				return false;
+			}else{
+				if(file){
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = loaded;
+					reader.onerror = errorHandler;
+				}
+			}
+		});
+		
+		function loaded(evt) {  
+			var fileString = evt.target.result;
+			var $frtText = $("#frtText");
+			$frtText.html("").val(fileString);
+		}
+
+		function errorHandler(evt) {
+			if(evt.target.error.name == "NOT_READABLE_ERR") {
+				alert("The file could not be read");
+			}
+		}
+		
 	}
 });
 
@@ -37,6 +69,9 @@ snow.ui.registerComponent("mainScreen",
 <div class="mainScreen">
 	<div class="frtColumnName">
 		First Column Name:<input id="frtColumnName" name="frtColumnName" value=""/>
+		<br>
+		CSV File: <input id="file" type="file">
+		          <button class="import">Import</button>
 	</div>
 	
 	<div class="firstArea">
