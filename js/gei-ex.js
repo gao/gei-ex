@@ -74,7 +74,7 @@ gei.generateValue = function(text,frtColumnName){
 			 }else{
 				 firstRow = text_array[0];
 			 }
-			 firsLine.push(frtColumnName);
+			 firsLine.push("Scenario");
 			 firsLine.push("Category");
 			 firsLine.push("SubCategory");
 			 firsLine.push("Name");
@@ -106,7 +106,7 @@ gei.generateValue = function(text,frtColumnName){
 			 
 			 //the data line 
 			 if(notNullValueNum(row) > 1){
-				 newLine.push(scenario);
+				 newLine.push(frtColumnName);
 				 newLine.push(currentCategory);
 				 newLine.push(currentSubCategory);
 				 for(var m = 1; m < row.length; m++){
