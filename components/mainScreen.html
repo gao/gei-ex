@@ -28,6 +28,11 @@ snow.ui.registerComponent("mainScreen",
 			}
 		});
 		
+		$element.sTouch(".clearButton",function(e){
+			$("#frtText").text("");
+			$("#scdText").text("");
+		});
+		
 		$element.sTouch(".import",function(e){
 			//start Read
 			var file = $("#file")[0].files[0];
@@ -80,7 +85,9 @@ snow.ui.registerComponent("mainScreen",
 	</div>
 	
 	<div class="generate">
-		<span class="generateButton"> Generate >> </span>
+		<button class="generateButton"> Generate >> </button>
+		</br></br>
+		<button class="clearButton"> Clear Data </button>
 	</div>
 	
 	<div class="sencondArea">
