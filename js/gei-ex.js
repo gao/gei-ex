@@ -67,9 +67,9 @@ gei.generateValue = function(text,frtColumnName){
 		 var firstRow = [];
 		 //here build the table title column
 		 if(text_array.length > 1){
-			 //sometimes in the csv file the first row only have S1 or S5,this is no use
+			 //sometimes in the csv file the first row have nothing or only have S1 or S5,this is no use
 			 //so the first row should be the file title
-			 if(text_array[0][0] != ""){
+			 if(notNullValueNum(text_array[0]) == 0 || text_array[0][0] != ""){
 				 firstRow = text_array[1];
 			 }else{
 				 firstRow = text_array[0];
