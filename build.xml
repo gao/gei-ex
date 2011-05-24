@@ -1,0 +1,16 @@
+<project name="gei-ex" default="updateSnowUI" basedir=".">
+
+    <property name="snowUI_src" value="/snowwork/workspace/snowUI" />	
+	
+	
+	<target name="updateSnowUI" description="Copy the snowModules">
+		
+		<copy file="${snowUI_src}/js-dependencies/jquery.min.js" todir="js"/>
+		<copy file="${snowUI_src}/js-dependencies/jquery.render.js" todir="js"/>
+		
+		<copy file="${snowUI_src}/src/js/snow.core.js" todir="js"/>
+		<copy file="${snowUI_src}/src/js/snow.dm.js" todir="js"/>
+		<copy file="${snowUI_src}/src/js/snow.event.js" todir="js"/>
+		<copy file="${snowUI_src}/src/js/snow.fx.js" todir="js"/>
+	</target>
+</project>
