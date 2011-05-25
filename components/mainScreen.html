@@ -23,7 +23,11 @@ snow.ui.registerComponent("mainScreen",
 				alert("The First Column Name can not null!");
 			}else{
 				var frtTextVal = $frtText.val();
-				var scdTextVal = gei.generateValue(frtTextVal,frtColumnName);
+				//this is for the raw format
+				//var scdTextVal = gei.generateValue(frtTextVal,frtColumnName);
+				
+				//this is for the motion format
+				var scdTextVal = gei.generateMotionValue(frtTextVal,frtColumnName);
 				$scdText.html("").val(scdTextVal);
 			}
 		});
