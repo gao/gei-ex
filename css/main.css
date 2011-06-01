@@ -6,7 +6,6 @@
 html,body{height:100%}
 
 body{
-	margin: 30px;
 	font-family: Arial;	
 	background:rgba(41,99,205,.5);
 }
@@ -18,8 +17,8 @@ body{
 	overflow:auto;
 }
 
-.mainScreen{
-	position: absolute;
+.mainScreen button{
+	cursor: pointer;
 }
 
 .mainScreen .frtColumnName{
@@ -40,7 +39,6 @@ body{
 	float:left;
 	margin: 100px 10px 100px 10px;
 	text-align:center;
-	cursor: pointer;
 }
 
 .generate .genDiv{

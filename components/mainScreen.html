@@ -65,7 +65,7 @@ snow.ui.registerComponent("mainScreen",
 		function loaded(evt) {  
 			var fileString = evt.target.result;
 			var $frtText = $("#frtText");
-			$frtText.html("").val(fileString);
+			$frtText.text("").val(fileString);
 		}
 
 		function errorHandler(evt) {
