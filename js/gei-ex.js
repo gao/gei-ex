@@ -1,7 +1,7 @@
 var gei = gei || {};
 
 //the raw format
-gei.generateValue = function(text,frtColumnName){
+gei.generateRawValue = function(text,frtColumnName){
 	
 	 if (text == ""){
 		 return null;

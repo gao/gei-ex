@@ -17,18 +17,23 @@ snow.ui.registerComponent("mainScreen",
 			var $frtText = $("#frtText");
 			var $scdText = $("#scdText");
 			var $frtColumn = $("#frtColumnName");
+			var butType = $(this).closest(".motionOrRaw").attr("data-obj_type");
 			
 			var frtColumnName = $frtColumn.val();
 			if(frtColumnName == ""){
 				alert("The First Column Name can not null!");
 			}else{
 				var frtTextVal = $frtText.val();
-				//this is for the raw format
-				//var scdTextVal = gei.generateValue(frtTextVal,frtColumnName);
+				var scdTextVal = "";
+				if(butType == "raw"){
+					//this is for the raw format
+					scdTextVal = gei.generateRawValue(frtTextVal,frtColumnName);
+				}else{
+					//this is for the motion format
+					scdTextVal = gei.generateMotionValue(frtTextVal,frtColumnName);
+				}
 				
-				//this is for the motion format
-				var scdTextVal = gei.generateMotionValue(frtTextVal,frtColumnName);
-				$scdText.html("").val(scdTextVal);
+				$scdText.text("").val(scdTextVal);
 			}
 		});
 		
@@ -89,9 +94,18 @@ snow.ui.registerComponent("mainScreen",
 	</div>
 	
 	<div class="generate">
-		<button class="generateButton"> Generate >> </button>
-		</br></br>
-		<button class="clearButton"> Clear Data </button>
+		<div class="motionOrRaw" data-obj_type="motion">
+			<span>Motion Format:</span>
+			<button class="generateButton"> Generate >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="raw">
+			<span>Raw Format:</span>
+			<button class="generateButton"> Generate >> </button>
+		</div>
+		<div class="genDiv">
+			<span>Clear TextArea Data:</span>
+			<button class="clearButton"> Clear All </button>
+		</div>
 	</div>
 	
 	<div class="sencondArea">
