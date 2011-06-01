@@ -7,62 +7,8 @@ gei.generateRawValue = function(text,frtColumnName){
 		 return null;
 	 }else{ 
 		 var den_array = new Array();
-		 var text_array = new Array();
-		 var line = new Array();
-		 var field = "";
-		 //is in double quotation marks
-		 var in_quata = false;
-		 //is the field start
-		 var field_start = true;
-
-		 for (var i = 0; i < text.length; i++) {
-			 var ch = text[i];
-			 if (in_quata){
-				 //if in the double quotation marks
-				 if (ch == '\"'){
-					 in_quata = false;  
-					 field = field + '\"';
-				 }else{ 
-					 field = field + ch;
-				 }
-			 }else{
-				 switch (ch)
-				 {
-				 case ',': //new field start
-					 line.push(field);
-					 field = "";
-					 field_start = true;
-					 break;
-				 case '\"'://manage the double quotation marks
-					 if (field_start){
-						 in_quata = true;
-					 }	
-					 field = field + '\"';
-					 break;
-				 case '\n': //new line start \r
-					 if (field.length > 0 || field_start){
-						 line.push(field);
-						 field = "";
-					 }
-					 text_array.push(line);
-					 line = [];
-					 field_start = true;
-					 break;
-				 default:
-					 field_start = false;
-				 	 field = field + ch;
-				 	 break;
-				 }
-			 }
-		 }
-
-		 if (field.length > 0 || field_start){
-			 line.push(field);
-		 } 
-		 if (line.length > 0){
-			 text_array.push(line);
-		 }    
-
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);
 		 //change the format to Denormalized
 		 var firsLine = [];
 		 var firstRow = [];
@@ -162,61 +108,8 @@ gei.generateMotionValue = function(text,frtColumnName){
 		 return null;
 	 }else{ 
 		 var den_array = new Array();
-		 var text_array = new Array();
-		 var line = new Array();
-		 var field = "";
-		 //is in double quotation marks
-		 var in_quata = false;
-		 //is the field start
-		 var field_start = true;
-
-		 for (var i = 0; i < text.length; i++) {
-			 var ch = text[i];
-			 if (in_quata){
-				 //if in the double quotation marks
-				 if (ch == '\"'){
-					 in_quata = false;  
-					 field = field + '\"';
-				 }else{ 
-					 field = field + ch;
-				 }
-			 }else{
-				 switch (ch)
-				 {
-				 case ',': //new field start
-					 line.push(field);
-					 field = "";
-					 field_start = true;
-					 break;
-				 case '\"'://manage the double quotation marks
-					 if (field_start){
-						 in_quata = true;
-					 }	
-					 field = field + '\"';
-					 break;
-				 case '\n': //new line start \r
-					 if (field.length > 0 || field_start){
-						 line.push(field);
-						 field = "";
-					 }
-					 text_array.push(line);
-					 line = [];
-					 field_start = true;
-					 break;
-				 default:
-					 field_start = false;
-				 	 field = field + ch;
-				 	 break;
-				 }
-			 }
-		 }
-
-		 if (field.length > 0 || field_start){
-			 line.push(field);
-		 } 
-		 if (line.length > 0){
-			 text_array.push(line);
-		 }    
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
 
 		 //change the format to Denormalized
 		 var firsLine = [];
@@ -320,6 +213,71 @@ gei.generateMotionValue = function(text,frtColumnName){
 		 return den_str;
 	 }
 };
+
+
+/**
+ * this method is build the data to text array
+ * @param text the .csv file value
+ * @return
+ */
+function bulidTextArrayFromCSV(text){
+	var text_array = new Array();
+	 var line = new Array();
+	 var field = "";
+	 //is in double quotation marks
+	 var in_quata = false;
+	 //is the field start
+	 var field_start = true;
+
+	 for (var i = 0; i < text.length; i++) {
+		 var ch = text[i];
+		 if (in_quata){
+			 //if in the double quotation marks
+			 if (ch == '\"'){
+				 in_quata = false;  
+				 field = field + '\"';
+			 }else{ 
+				 field = field + ch;
+			 }
+		 }else{
+			 switch (ch)
+			 {
+			 case ',': //new field start
+				 line.push(field);
+				 field = "";
+				 field_start = true;
+				 break;
+			 case '\"'://manage the double quotation marks
+				 if (field_start){
+					 in_quata = true;
+				 }	
+				 field = field + '\"';
+				 break;
+			 case '\n': //new line start \r
+				 if (field.length > 0 || field_start){
+					 line.push(field);
+					 field = "";
+				 }
+				 text_array.push(line);
+				 line = [];
+				 field_start = true;
+				 break;
+			 default:
+				 field_start = false;
+			 	 field = field + ch;
+			 	 break;
+			 }
+		 }
+	 }
+
+	 if (field.length > 0 || field_start){
+		 line.push(field);
+	 } 
+	 if (line.length > 0){
+		 text_array.push(line);
+	 } 
+	 return text_array;
+}
 
 /**
  * this method is to count each line value number,judge whether the line is null line ,category line or data line
