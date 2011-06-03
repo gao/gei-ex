@@ -28,9 +28,12 @@ snow.ui.registerComponent("mainScreen",
 				if(butType == "raw"){
 					//this is for the raw format
 					scdTextVal = gei.generateRawValue(frtTextVal,frtColumnName);
-				}else{
+				}else if(butType == "motion"){
 					//this is for the motion format
 					scdTextVal = gei.generateMotionValue(frtTextVal,frtColumnName);
+				}else if(butType == "type1"){
+					//this is for the motion format
+					scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,butType);
 				}
 				
 				$scdText.text("").val(scdTextVal);
@@ -42,6 +45,7 @@ snow.ui.registerComponent("mainScreen",
 			$("#scdText").text("");
 		});
 		
+		// --------- import the csv file --------- //
 		$element.sTouch(".import",function(e){
 			//start Read
 			var file = $("#file")[0].files[0];
@@ -73,6 +77,27 @@ snow.ui.registerComponent("mainScreen",
 				alert("The file could not be read");
 			}
 		}
+		// --------- /import the csv file --------- //
+		
+		$element.sTouch(".create",function(e){
+//			var type = $(this).closest(".createType").attr("data-obj_type");
+//			if(type == 'Type1'){
+//				var url = "https://www.google.com/fusiontables/api/query?sql=SELECT * FROM 896069 WHERE Scenario='BAU' AND Name='Difference (2009 $ billions)'";
+//				$.ajax({
+//					type: "GET",
+//				   	url: url,
+//				   	success: function(data,textStatus){
+//						console.log("---success---textStatus:"+textStatus);
+//						console.log(data);
+//				   	},
+//				   	error: function(XMLHttpRequest,textStatus){
+//						console.log("---error---textStatus:"+textStatus);
+//						console.log(XMLHttpRequest);
+//				   	}
+//				});
+//			}
+			
+		});
 		
 	}
 });
@@ -87,7 +112,16 @@ snow.ui.registerComponent("mainScreen",
 		CSV File: <input id="file" type="file">
 		          <button class="import">Import</button>
 	</div>
-	
+	<!--
+	<div class="createTypeDiv">
+		<div class="title">
+			<span>Generate From Fusion Table:</span>
+		</div>
+		<div class="createType" data-obj_type="Type1">
+			<button class="create">Create TYPE1</button>
+		</div>
+	</div>
+	-->
 	<div class="firstArea">
 		Input TextArea:</br>
 		<textarea id="frtText" cols="50" rows="30"></textarea>
@@ -95,16 +129,16 @@ snow.ui.registerComponent("mainScreen",
 	
 	<div class="generate">
 		<div class="motionOrRaw" data-obj_type="motion">
-			<span>Motion Format:</span>
-			<button class="generateButton"> Generate >> </button>
+			<button class="generateButton"> Motion Format >> </button>
 		</div>
 		<div class="genDiv motionOrRaw" data-obj_type="raw">
-			<span>Raw Format:</span>
-			<button class="generateButton"> Generate >> </button>
+			<button class="generateButton"> Raw Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="type1">
+			<button class="generateButton"> Type1 Format >> </button>
 		</div>
 		<div class="genDiv">
-			<span>Clear TextArea Data:</span>
-			<button class="clearButton"> Clear All </button>
+			<button class="clearButton"> Clear All Data </button>
 		</div>
 	</div>
 	
