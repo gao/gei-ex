@@ -17,7 +17,7 @@ snow.ui.registerComponent("mainScreen",
 			var $frtText = $("#frtText");
 			var $scdText = $("#scdText");
 			var $frtColumn = $("#frtColumnName");
-			var butType = $(this).closest(".motionOrRaw").attr("data-obj_type");
+			var dataType = $(this).closest(".motionOrRaw").attr("data-obj_type");
 			
 			var frtColumnName = $frtColumn.val();
 			if(frtColumnName == ""){
@@ -25,16 +25,7 @@ snow.ui.registerComponent("mainScreen",
 			}else{
 				var frtTextVal = $frtText.val();
 				var scdTextVal = "";
-				if(butType == "raw"){
-					//this is for the raw format
-					scdTextVal = gei.generateRawValue(frtTextVal,frtColumnName);
-				}else if(butType == "motion"){
-					//this is for the motion format
-					scdTextVal = gei.generateMotionValue(frtTextVal,frtColumnName);
-				}else if(butType == "type1"){
-					//this is for the motion format
-					scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,butType);
-				}
+				scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,dataType);
 				
 				$scdText.text("").val(scdTextVal);
 			}
@@ -79,26 +70,6 @@ snow.ui.registerComponent("mainScreen",
 		}
 		// --------- /import the csv file --------- //
 		
-		$element.sTouch(".create",function(e){
-//			var type = $(this).closest(".createType").attr("data-obj_type");
-//			if(type == 'Type1'){
-//				var url = "https://www.google.com/fusiontables/api/query?sql=SELECT * FROM 896069 WHERE Scenario='BAU' AND Name='Difference (2009 $ billions)'";
-//				$.ajax({
-//					type: "GET",
-//				   	url: url,
-//				   	success: function(data,textStatus){
-//						console.log("---success---textStatus:"+textStatus);
-//						console.log(data);
-//				   	},
-//				   	error: function(XMLHttpRequest,textStatus){
-//						console.log("---error---textStatus:"+textStatus);
-//						console.log(XMLHttpRequest);
-//				   	}
-//				});
-//			}
-			
-		});
-		
 	}
 });
 
@@ -112,16 +83,7 @@ snow.ui.registerComponent("mainScreen",
 		CSV File: <input id="file" type="file">
 		          <button class="import">Import</button>
 	</div>
-	<!--
-	<div class="createTypeDiv">
-		<div class="title">
-			<span>Generate From Fusion Table:</span>
-		</div>
-		<div class="createType" data-obj_type="Type1">
-			<button class="create">Create TYPE1</button>
-		</div>
-	</div>
-	-->
+
 	<div class="firstArea">
 		Input TextArea:</br>
 		<textarea id="frtText" cols="50" rows="30"></textarea>
