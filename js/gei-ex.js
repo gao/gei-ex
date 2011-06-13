@@ -21,7 +21,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 		 text_array = bulidTextArrayFromCSV(text);   
 		 var category1, name1, category2, name2;
 		 
-		 if(dataType == "type1"){
+		 if(dataType == "type1" || dataType == "type2"){
 			 category1 = gei.type.type1.category1;
 			 name1 = gei.type.type1.name1;
 			 category2 = gei.type.type1.category2;
@@ -54,6 +54,14 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 			 firsLine.push("Name");
 			 firsLine.push("Year");
 			 firsLine.push("Value");
+			 firsLine.push("Total");
+		 }else if(dataType == "type2"){
+			 firsLine.push("Scenario");
+			 firsLine.push("Category");
+			 firsLine.push("SubCategory");
+			 firsLine.push("Name");
+			 firsLine.push("Year");
+			 firsLine.push("GDP");
 			 firsLine.push("Total");
 		 }else if(dataType == "motion"){
 			 firsLine.push("Scenario");
@@ -130,6 +138,54 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 							 } 
 						 }
 					 }
+					 
+				 }else if(dataType == "type2"){
+					 //data format is type1
+					 if(currentCategory == category1 && name == name1){
+						 for(var k = 2; k < row.length; k++){
+							 if(row[k] != ""){
+								 var newLine = new Array();
+								 newLine.push(frtColumnName);
+								 newLine.push(currentCategory);
+								 newLine.push(currentSubCategory);
+								 newLine.push(name);
+								 newLine.push(yearArr[k-2]);
+								 var rVal = parseFloat(row[k]);
+								 if(isNaN(rVal)){
+									 newLine.push(0);
+								 }else{
+									 newLine.push(rVal);
+								 }
+
+								 newLine.push("");
+								 newLine.push("\n");
+								 den_array.push(newLine);
+							 }
+						 }
+					 }
+					 
+					 if(currentCategory == category2 && name == name2){
+						 var total_array = new Array();
+						 for(var k = 2; k < row.length; k++){
+							 if(row[k] != ""){
+								 total_array.push(row[k]);
+							 }
+						 }
+						 
+						 for(var h = 1; h < den_array.length; h++){
+							 var denRow = den_array[h];
+							 if(h < total_array.length+1){ 
+								 var rVal = parseFloat(total_array[h-1]);
+								 if(isNaN(rVal)){
+									 den_array[h][6] = 0;
+								 }else{
+									 den_array[h][6] =rVal;
+								 }
+								
+							 } 
+						 }
+					 }
+					 
 				 } else if(dataType == "motion"){
 					 //data format is motion
 					 for(var k = 2; k < row.length; k++){
