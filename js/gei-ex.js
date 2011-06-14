@@ -60,9 +60,9 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 			 firsLine.push("Category");
 			 firsLine.push("SubCategory");
 			 firsLine.push("Name");
-			 firsLine.push("Year");
-			 firsLine.push("GDP");
-			 firsLine.push("Total");
+			 firsLine.push("Year[type=date;format=y]");
+			 firsLine.push("GDP[type=float]");
+			 firsLine.push("Total[type=float]");
 		 }else if(dataType == "motion"){
 			 firsLine.push("Scenario");
 			 firsLine.push("Category");
