@@ -150,13 +150,17 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 								 newLine.push(currentSubCategory);
 								 newLine.push(name);
 								 newLine.push(yearArr[k-2]);
-								 var rVal = parseFloat(row[k]);
-								 if(isNaN(rVal)){
-									 newLine.push(0);
+								 var rVal = row[k];
+								 if(rVal.indexOf("(") != -1){
+									 //alert(rVal+"=======have () ==")
+									 newLine.push(-rVal.substring(2,(rVal.length-1)));
 								 }else{
-									 newLine.push(rVal);
+									 if(isNaN(rVal)){
+										 newLine.push(0);
+									 }else{
+										 newLine.push(rVal);
+									 }
 								 }
-
 								 newLine.push("");
 								 newLine.push("\n");
 								 den_array.push(newLine);
@@ -164,7 +168,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 						 }
 					 }
 					 
-					 if(currentCategory == category2 && name == name2){
+					 if(currentCategory == category2 && currentSubCategory == category2 && name == name2){
 						 var total_array = new Array();
 						 for(var k = 2; k < row.length; k++){
 							 if(row[k] != ""){
@@ -175,13 +179,18 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 						 for(var h = 1; h < den_array.length; h++){
 							 var denRow = den_array[h];
 							 if(h < total_array.length+1){ 
-								 var rVal = parseFloat(total_array[h-1]);
-								 if(isNaN(rVal)){
-									 den_array[h][6] = 0;
+								 var rVal = total_array[h-1];
+								 if(rVal.indexOf("(") != -1){
+									 //alert(rVal+"::::have () ==")
+									 den_array[h][6] = -rVal.substring(2,(rVal.length-1));
 								 }else{
-									 den_array[h][6] =rVal;
+									 //alert(isNaN(rVal))
+									 if(isNaN(rVal)){
+										 den_array[h][6] = 0;
+									 }else{
+										 den_array[h][6] =rVal;
+									 }
 								 }
-								
 							 } 
 						 }
 					 }
