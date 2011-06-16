@@ -25,8 +25,12 @@ snow.ui.registerComponent("mainScreen",
 			}else{
 				var frtTextVal = $frtText.val();
 				var scdTextVal = "";
-				scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,dataType);
-				
+				if(dataType == "gei-states"){
+					scdTextVal = gei.generateGEIStatesValue(frtTextVal,frtColumnName,dataType);
+				}else{
+					scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,dataType);
+				}
+
 				$scdText.text("").val(scdTextVal);
 			}
 		});
@@ -101,6 +105,12 @@ snow.ui.registerComponent("mainScreen",
 		</div>
 		<div class="genDiv motionOrRaw" data-obj_type="type2">
 			<button class="generateButton"> Type2 Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-main">
+			<button class="generateButton"> GEI-Main Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-states">
+			<button class="generateButton"> GEI-States Format >> </button>
 		</div>
 		<div class="genDiv">
 			<button class="clearButton"> Clear All Data </button>

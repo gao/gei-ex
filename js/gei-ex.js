@@ -78,9 +78,27 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 			 for(var t = 2; t < firstRow.length; t++){
 				 firsLine.push(firstRow[t]);
 			 }
+		 }else if(dataType == "gei-main"){
+			 firsLine.push("Scenario");
+			 firsLine.push("Category");
+			 firsLine.push("SubCategory");
+			 firsLine.push("Name");
+			 firsLine.push("Year[type=date;format=y]");
+			 firsLine.push("Value[type=float]");
+		 }else if(dataType == "gei-states"){
+			 firsLine.push("Scenario");
+			 firsLine.push("Name");
+			 firsLine.push("State");
+			 firsLine.push("Year[type=date;format=y]");
+			 firsLine.push("Value[type=float]");
 		 }
 		 firsLine.push("\n");
 		 den_array.push(firsLine);
+		 
+		 
+		 if(dataType == "gei-main"){
+			 text_array = text_array.slice(0,(text_array.length-150))
+		 }
 		 
 		 var currentCategory = "";
 		 var currentSubCategory = "";
@@ -150,17 +168,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 								 newLine.push(currentSubCategory);
 								 newLine.push(name);
 								 newLine.push(yearArr[k-2]);
-								 var rVal = row[k];
-								 if(rVal.indexOf("(") != -1){
-									 //alert(rVal+"=======have () ==")
-									 newLine.push(-rVal.substring(2,(rVal.length-1)));
-								 }else{
-									 if(isNaN(rVal)){
-										 newLine.push(0);
-									 }else{
-										 newLine.push(rVal);
-									 }
-								 }
+								 newLine.push(formatValue(row[k]));
 								 newLine.push("");
 								 newLine.push("\n");
 								 den_array.push(newLine);
@@ -179,18 +187,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 						 for(var h = 1; h < den_array.length; h++){
 							 var denRow = den_array[h];
 							 if(h < total_array.length+1){ 
-								 var rVal = total_array[h-1];
-								 if(rVal.indexOf("(") != -1){
-									 //alert(rVal+"::::have () ==")
-									 den_array[h][6] = -rVal.substring(2,(rVal.length-1));
-								 }else{
-									 //alert(isNaN(rVal))
-									 if(isNaN(rVal)){
-										 den_array[h][6] = 0;
-									 }else{
-										 den_array[h][6] =rVal;
-									 }
-								 }
+								 den_array[h][6] = formatValue(total_array[h-1]);
 							 } 
 						 }
 					 }
@@ -221,6 +218,21 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 					 }
 					 newLine.push("\n");
 					 den_array.push(newLine);
+				 } else if(dataType == "gei-main"){
+					 //data format is motion
+					 for(var k = 2; k < row.length; k++){
+						 if(row[k] != ""){
+							 var newLine = new Array();
+							 newLine.push(frtColumnName);
+							 newLine.push(currentCategory);
+							 newLine.push(currentSubCategory);
+							 newLine.push(name);
+							 newLine.push(yearArr[k-2]);
+							 newLine.push(formatValue(row[k]));
+							 newLine.push("\n");
+							 den_array.push(newLine);
+						 }
+					 }
 				 }
 			 }
 			 
@@ -260,6 +272,99 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 	 }
 };
 
+
+//generate the GEIStates format
+gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
+	 if (text == ""){
+		 return null;
+	 }else{ 
+		 var den_array = new Array();
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
+
+		 //change the format to Denormalized
+		 var firsLine = [];
+		 var firstRow = [];
+		 var yearArr = [];
+		 
+		 if(text_array.length > 1){
+			 //sometimes in the csv file the first row have nothing or only have S1 or S5,this is no use
+			 //so the first row should be the file title
+			 if(notNullValueNum(text_array[0]) == 0 || text_array[0][0] != ""){
+				 firstRow = text_array[1];
+			 }else{
+				 firstRow = text_array[0];
+			 }
+			 for(var t = 2; t < firstRow.length; t++){
+				 yearArr.push(firstRow[t]);
+			 } 
+		 }
+		 
+		 //here build the table title column
+		 if(dataType == "gei-states"){
+			 firsLine.push("Scenario");
+			 firsLine.push("Name");
+			 firsLine.push("State");
+			 firsLine.push("Year[type=date;format=y]");
+			 firsLine.push("Value[type=float]");
+		 }
+		 firsLine.push("\n");
+		 den_array.push(firsLine);
+		 
+		 if(dataType == "gei-states"){
+			 text_array = text_array.slice(134,(text_array.length-1));
+		 }
+		 		 
+		 var name = "";
+		 
+		 //here build each line data
+		 //you will note here start with 2,
+		 //because the first line maybe is the null line and the second line maybe the column title
+		 //or the first line is the column title and the second line is null line
+		 for(var j = 1; j < text_array.length; j++){
+			 var preRow = text_array[j-1];
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 var state = row[1];
+				 if(dataType == "gei-states"){
+					 //data format is motion
+					 for(var k = 2; k < row.length; k++){
+						 if(row[k] != ""){
+							 var newLine = new Array();
+							 newLine.push(frtColumnName);
+							 newLine.push(name);
+							 newLine.push(state);
+							 newLine.push(yearArr[k-2]);
+							 newLine.push(formatValue(row[k]));
+							 newLine.push("\n");
+							 den_array.push(newLine);
+						 }
+					 }
+				 }
+			 }
+
+			 //preRow is empty ,current row is one data,next row is data line,it is a name
+			 if(notNullValueNum(preRow) == 0 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 name = row[1];
+			 }
+			 
+		 }
+		 var den_str = "";
+		 for(var a = 0; a < den_array.length; a++){
+			 den_str = den_str + den_array[a];
+		 }
+ 
+		 return den_str;
+	 }
+};
 
 /**
  * this method is build the data to text array
@@ -342,4 +447,25 @@ function notNullValueNum(textArray){
 		}
 	}
 	return num;
+}
+
+function formatValue(rVal){
+	var val = "";
+	 //in the excel,when the number is negative,it will use ()
+	 //first remove the blank and ",here need float
+	 rVal = rVal.replace(/\s/g, '').replace(/\"/g, '').replace(",","");
+	 //console.log("::::rVal:"+rVal);
+	 if(rVal.indexOf("(") != -1){
+		 val = -(rVal.substring(1,(rVal.length-1)));
+		 //console.log("()())():::"+val);
+	 }else if(rVal.indexOf("%") != -1){
+		 val = rVal.substring(0,(rVal.length-1))/100;
+	 }else{
+		 if(isNaN(rVal)){
+			 val = 0;
+		 }else{
+			 val = rVal;
+		 }
+	 }
+	 return val;
 }
