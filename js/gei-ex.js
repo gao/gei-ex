@@ -85,12 +85,6 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 			 firsLine.push("Name");
 			 firsLine.push("Year[type=date;format=y]");
 			 firsLine.push("Value[type=float]");
-		 }else if(dataType == "gei-states"){
-			 firsLine.push("Scenario");
-			 firsLine.push("Name");
-			 firsLine.push("State");
-			 firsLine.push("Year[type=date;format=y]");
-			 firsLine.push("Value[type=float]");
 		 }
 		 firsLine.push("\n");
 		 den_array.push(firsLine);
@@ -227,6 +221,10 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 							 newLine.push(currentCategory);
 							 newLine.push(currentSubCategory);
 							 newLine.push(name);
+							 //if there no year should break
+							 if(yearArr[k-2] == ""){
+								 break;
+							 }
 							 newLine.push(yearArr[k-2]);
 							 newLine.push(formatValue(row[k]));
 							 newLine.push("\n");
