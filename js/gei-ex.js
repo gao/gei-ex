@@ -82,7 +82,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 			 firsLine.push("Scenario");
 			 firsLine.push("Category");
 			 firsLine.push("SubCategory");
-			 firsLine.push("Name");
+			 firsLine.push("Metric");
 			 firsLine.push("Year[type=date;format=y]");
 			 firsLine.push("Value[type=float]");
 		 }
@@ -213,7 +213,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 					 newLine.push("\n");
 					 den_array.push(newLine);
 				 } else if(dataType == "gei-main"){
-					 //data format is motion
+					 //data format is gei-main
 					 for(var k = 2; k < row.length; k++){
 						 if(row[k] != ""){
 							 var newLine = new Array();
@@ -301,7 +301,7 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 		 //here build the table title column
 		 if(dataType == "gei-states"){
 			 firsLine.push("Scenario");
-			 firsLine.push("Name");
+			 firsLine.push("Metric");
 			 firsLine.push("State");
 			 firsLine.push("Year[type=date;format=y]");
 			 firsLine.push("Value[type=float]");
@@ -312,13 +312,11 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 		 if(dataType == "gei-states"){
 			 text_array = text_array.slice(134,(text_array.length-1));
 		 }
-		 		 
+		 
+		 //name is the Metric
 		 var name = "";
 		 
 		 //here build each line data
-		 //you will note here start with 2,
-		 //because the first line maybe is the null line and the second line maybe the column title
-		 //or the first line is the column title and the second line is null line
 		 for(var j = 1; j < text_array.length; j++){
 			 var preRow = text_array[j-1];
 			 var row = text_array[j];
@@ -333,13 +331,17 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 			 if(notNullValueNum(row) > 1){
 				 var state = row[1];
 				 if(dataType == "gei-states"){
-					 //data format is motion
+					 //data format is gei-states
 					 for(var k = 2; k < row.length; k++){
 						 if(row[k] != ""){
 							 var newLine = new Array();
 							 newLine.push(frtColumnName);
 							 newLine.push(name);
 							 newLine.push(state);
+							 //if there no year should break
+							 if(yearArr[k-2] == ""){
+								 break;
+							 }
 							 newLine.push(yearArr[k-2]);
 							 newLine.push(formatValue(row[k]));
 							 newLine.push("\n");
@@ -349,7 +351,7 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 				 }
 			 }
 
-			 //preRow is empty ,current row is one data,next row is data line,it is a name
+			 //preRow is empty ,current row is one data,next row is data line,it is a Metric
 			 if(notNullValueNum(preRow) == 0 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 name = row[1];
 			 }
@@ -449,16 +451,17 @@ function notNullValueNum(textArray){
 
 function formatValue(rVal){
 	var val = "";
-	 //in the excel,when the number is negative,it will use ()
-	 //first remove the blank and ",here need float
+	 //first remove the blank,comma and ",here need float
 	 rVal = rVal.replace(/\s/g, '').replace(/\"/g, '').replace(",","");
-	 //console.log("::::rVal:"+rVal);
+	 
 	 if(rVal.indexOf("(") != -1){
+		 //in the excel,when the number is negative,it will use ()
 		 val = -(rVal.substring(1,(rVal.length-1)));
-		 //console.log("()())():::"+val);
 	 }else if(rVal.indexOf("%") != -1){
+		 //the pde data need float,so here change percent
 		 val = rVal.substring(0,(rVal.length-1))/100;
 	 }else{
+		 //sometimes the value is - ,so here change it to 0
 		 if(isNaN(rVal)){
 			 val = 0;
 		 }else{
