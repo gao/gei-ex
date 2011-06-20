@@ -366,6 +366,195 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 	 }
 };
 
+//generate the topic xml format
+gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
+	 if (text == ""){
+		 return null;
+	 }else{ 
+		 var topic_str = "<topics>\n<topic id='"+topicId+"'>\n"+
+		 				"  <info>\n"+
+		 				"    <name>\n"+
+		 				"      <value>"+topicName+"</value>\n"+
+		 				"    </name>\n"+
+		 				"  </info>\n";
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
+
+		 if(dataType == "gei-national-topic-xml"){
+			 text_array = text_array.slice(0,(text_array.length-150))
+		 }
+		 
+		 var currentCategory = "";
+		 var currentSubCategory = "";
+		 
+		 //here build each line data
+		 for(var j = 1; j < text_array.length; j++){
+			 var preRow = text_array[j-1];
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 var nextRow2 = text_array[j+2];
+			 var nextRow3 = text_array[j+3];
+			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 continue
+			 }
+
+			//the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
+				 if(currentCategory != ""){
+					 topic_str = topic_str + "  </topic>\n"
+				 }
+				 currentCategory = row[1];
+				 topic_str = topic_str +
+				 			"  <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+				 			"    <info>\n"+
+				 			"      <name>\n"+
+				 			"        <value>"+currentCategory+"</value>\n"+
+				 			"      </name>\n"+
+				 			"    </info>\n" ;
+			 } 
+			 
+			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
+			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 currentSubCategory = row[1];
+				 topic_str = topic_str +
+		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"      <info>\n"+
+		 			"        <name>\n"+
+		 			"          <value>"+currentSubCategory+"</value>\n"+
+		 			"        </name>\n"+
+		 			"      </info>\n"+
+		 			"    </topic>\n";
+			 }
+			 
+			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
+				 currentSubCategory = currentCategory;
+				 topic_str = topic_str +
+		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"      <info>\n"+
+		 			"        <name>\n"+
+		 			"          <value>"+currentSubCategory+"</value>\n"+
+		 			"        </name>\n"+
+		 			"      </info>\n"+
+		 			"    </topic>\n";
+			 }
+			 
+			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+				 currentSubCategory = currentCategory;
+				 topic_str = topic_str +
+		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"      <info>\n"+
+		 			"        <name>\n"+
+		 			"          <value>"+currentSubCategory+"</value>\n"+
+		 			"        </name>\n"+
+		 			"      </info>\n"+
+		 			"    </topic>\n";
+			 }
+			 
+			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
+				 currentSubCategory = row[1];
+				 topic_str = topic_str +
+		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"      <info>\n"+
+		 			"        <name>\n"+
+		 			"          <value>"+currentSubCategory+"</value>\n"+
+		 			"        </name>\n"+
+		 			"      </info>\n"+
+		 			"    </topic>\n";
+			 }
+			 
+		 }
+		 
+		 topic_str = topic_str +"</topic>\n</topics>\n"
+ 
+		 return topic_str;
+	 }
+};
+
+//generate the part of Concept xml format
+gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
+	 if (text == ""){
+		 return null;
+	 }else{ 
+		 var concept_str = "";
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
+
+		 if(dataType == "gei-national-concept-xml"){
+			 text_array = text_array.slice(0,(text_array.length-150))
+		 }
+		 
+		 var currentCategory = "";
+		 var currentSubCategory = "";
+		 
+		 //here build each line data
+		 for(var j = 2; j < text_array.length; j++){
+			 var preRow = text_array[j-1];
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 var nextRow2 = text_array[j+2];
+			 var nextRow3 = text_array[j+3];
+			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 var name = row[1];
+				 concept_str = concept_str +
+		 			"  <concept id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+name.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"    <info>\n"+
+		 			"      <name>\n"+
+		 			"        <value>"+name+"</value>\n"+
+		 			"      </name>\n"+
+		 			"    </info>\n"+
+		 			"    <topic ref='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'/>\n"+
+		 			"    <type ref='float'/>\n"+
+		 			"  </concept>\n";
+			 }
+
+			//the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
+				 currentCategory = row[1]; 
+			 } 
+			 
+			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
+			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 currentSubCategory = row[1];
+			 }
+			 
+			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
+				 currentSubCategory = currentCategory;
+			 }
+			 
+			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+				 currentSubCategory = currentCategory;
+			 }
+			 
+			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
+				 currentSubCategory = row[1];
+			 }
+			 
+		 }
+ 
+		 return concept_str;
+	 }
+};
+
 /**
  * this method is build the data to text array
  * @param text the .csv file value
