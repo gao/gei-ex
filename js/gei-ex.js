@@ -271,6 +271,130 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 };
 
 
+gei.generateGEINationalValue = function(text,frtColumnName,dataType){
+	 if (text == ""){
+		 return null;
+	 }else{ 
+		 var den_array = new Array();
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
+		 //change the format to Denormalized
+		 var firsLine = [];
+		 var firstRow = [];
+		 var yearArr = [];
+		 
+		 if(text_array.length > 1){
+			 //sometimes in the csv file the first row have nothing or only have S1 or S5,this is no use
+			 //so the first row should be the file title
+			 if(notNullValueNum(text_array[0]) == 0 || text_array[0][0] != ""){
+				 firstRow = text_array[1];
+			 }else{
+				 firstRow = text_array[0];
+			 }
+			 for(var t = 2; t < firstRow.length; t++){
+				 yearArr.push(firstRow[t]);
+			 } 
+		 }
+		 
+		 
+		 if(dataType == "gei-national"){
+			 text_array = text_array.slice(0,135)
+		 }
+		 
+		 
+		 //bulid the first column
+		 firsLine.push("Scenario");
+		 firsLine.push("Year[type=date;format=y]");
+		 var currentCategory = "";
+		 var currentSubCategory = "";
+		 for(var j = 2; j < text_array.length; j++){
+			 var preRow = text_array[j-1];
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 var nextRow2 = text_array[j+2];
+			 var nextRow3 = text_array[j+3];
+			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 var name = row[1];
+				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
+				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(columnName.length >= 64){
+					 columnName = columnName.substring(0,63);
+				 }
+				 firsLine.push(columnName+"[type=float]");
+			 }
+			 
+			 //the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
+				 currentCategory = row[1];
+			 } 
+			 
+			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
+			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 currentSubCategory = row[1];
+			 }
+			 
+			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
+				 currentSubCategory = currentCategory;
+			 }
+			 
+			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+				 currentSubCategory = currentCategory;
+			 }
+			 
+			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
+				 currentSubCategory = row[1];
+			 } 
+		 }		 
+		 firsLine.push("\n");
+		 den_array.push(firsLine);
+		 
+		 //here bulid the data line
+		 for(var i = 0;i < yearArr.length; i++ ){
+			 var yearVal = yearArr[i];
+			 if(yearVal != ""){
+				 var newLine = new Array();
+				 newLine.push(frtColumnName);
+				 newLine.push(yearVal);
+				 
+				 for(var a = 2; a < text_array.length; a++){
+					 var rowNow = text_array[a];
+					 //the data line 
+					 if(notNullValueNum(rowNow) > 1){
+						 var value = rowNow[i+2];
+						 if(value == "" || value == null){
+							 value = 0 ;
+						 }else{
+							 value = formatValue(rowNow[i+2]);
+						 }
+						 newLine.push(value);
+					 }
+				 }
+				 
+				 newLine.push("\n");
+				 den_array.push(newLine);
+			 }
+		 }
+		 
+		 
+		 var den_str = "";
+		 for(var a = 0; a < den_array.length; a++){
+			 den_str = den_str + den_array[a];
+		 }
+  
+		 return den_str;
+	 }
+};
+
 //generate the GEIStates format
 gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 	 if (text == ""){
