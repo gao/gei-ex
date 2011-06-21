@@ -323,7 +323,7 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
 				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
-				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(columnName.length >= 64){
 					 columnName = columnName.substring(0,63);
 				 }
@@ -536,7 +536,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 				 }
 				 currentCategory = row[1];
 				 var tName =  topicId+"_"+currentCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -553,7 +553,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 currentSubCategory = row[1];
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -571,7 +571,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
 				 currentSubCategory = currentCategory;
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -589,7 +589,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
 				 currentSubCategory = currentCategory;
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -607,7 +607,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
 				 currentSubCategory = row[1];
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -662,13 +662,13 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
 				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
-				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(columnName.length >= 64){
 					 columnName = columnName.substring(0,63);
 				 }
 				 
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
