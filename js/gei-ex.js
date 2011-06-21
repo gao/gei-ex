@@ -715,6 +715,81 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 	 }
 };
 
+//generate the part of Slice xml format
+gei.generateGEISliceXmlValue = function(text,dataType){
+	 if (text == ""){
+		 return null;
+	 }else{ 
+		 var slice_str = "";
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
+
+		 if(dataType == "gei-national-slice-xml"){
+			 text_array = text_array.slice(0,(text_array.length-150));
+		 }
+		 
+		 var currentCategory = "";
+		 var currentSubCategory = "";
+		 
+		 //here build each line data
+		 for(var j = 2; j < text_array.length; j++){
+			 var preRow = text_array[j-1];
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 var nextRow2 = text_array[j+2];
+			 var nextRow3 = text_array[j+3];
+			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 var name = row[1];
+				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
+				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(columnName.length >= 64){
+					 columnName = columnName.substring(0,63);
+				 }
+				 
+				
+				 slice_str = slice_str +
+		 			"    <metric concept='"+columnName+"'/>\n";
+			 }
+
+			//the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
+				 currentCategory = row[1]; 
+			 } 
+			 
+			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
+			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 currentSubCategory = row[1];
+			 }
+			 
+			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
+				 currentSubCategory = currentCategory;
+			 }
+			 
+			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+				 currentSubCategory = currentCategory;
+			 }
+			 
+			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
+				 currentSubCategory = row[1];
+			 }
+			 
+		 }
+ 
+		 return slice_str;
+	 }
+};
+
+
 /**
  * this method is build the data to text array
  * @param text the .csv file value
