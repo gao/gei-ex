@@ -676,7 +676,7 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 		 			"  <concept id='"+columnName+"'>\n"+
 		 			"    <info>\n"+
 		 			"      <name>\n"+
-		 			"        <value>"+name+"</value>\n"+
+		 			"        <value>"+name.replace(/\,|\"/g, "")+"</value>\n"+
 		 			"      </name>\n"+
 		 			"    </info>\n"+
 		 			"    <topic ref='"+tName+"'/>\n"+
