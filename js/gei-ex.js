@@ -535,8 +535,13 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 					 topic_str = topic_str + "  </topic>\n"
 				 }
 				 currentCategory = row[1];
+				 var tName =  topicId+"_"+currentCategory;
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(tName.length >= 64){
+					 tName = tName.substring(0,63);
+				 }
 				 topic_str = topic_str +
-				 			"  <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+				 			"  <topic id='"+tName+"'>\n"+
 				 			"    <info>\n"+
 				 			"      <name>\n"+
 				 			"        <value>"+currentCategory+"</value>\n"+
@@ -547,8 +552,13 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
 			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 currentSubCategory = row[1];
+				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(tName.length >= 64){
+					 tName = tName.substring(0,63);
+				 }
 				 topic_str = topic_str +
-		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"    <topic id='"+tName+"'>\n"+
 		 			"      <info>\n"+
 		 			"        <name>\n"+
 		 			"          <value>"+currentSubCategory+"</value>\n"+
@@ -560,8 +570,13 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
 				 currentSubCategory = currentCategory;
+				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(tName.length >= 64){
+					 tName = tName.substring(0,63);
+				 }
 				 topic_str = topic_str +
-		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"    <topic id='"+tName+"'>\n"+
 		 			"      <info>\n"+
 		 			"        <name>\n"+
 		 			"          <value>"+currentSubCategory+"</value>\n"+
@@ -573,8 +588,13 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
 				 currentSubCategory = currentCategory;
+				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(tName.length >= 64){
+					 tName = tName.substring(0,63);
+				 }
 				 topic_str = topic_str +
-		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"    <topic id='"+tName+"'>\n"+
 		 			"      <info>\n"+
 		 			"        <name>\n"+
 		 			"          <value>"+currentSubCategory+"</value>\n"+
@@ -586,8 +606,13 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
 				 currentSubCategory = row[1];
+				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(tName.length >= 64){
+					 tName = tName.substring(0,63);
+				 }
 				 topic_str = topic_str +
-		 			"    <topic id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"    <topic id='"+tName+"'>\n"+
 		 			"      <info>\n"+
 		 			"        <name>\n"+
 		 			"          <value>"+currentSubCategory+"</value>\n"+
@@ -636,14 +661,25 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 			 //the data line 
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
+				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
+				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(columnName.length >= 64){
+					 columnName = columnName.substring(0,63);
+				 }
+				 
+				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 if(tName.length >= 64){
+					 tName = tName.substring(0,63);
+				 }
 				 concept_str = concept_str +
-		 			"  <concept id='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+name.replace(/\s/g, "").replace(/\(|\)/g, "")+"'>\n"+
+		 			"  <concept id='"+columnName+"'>\n"+
 		 			"    <info>\n"+
 		 			"      <name>\n"+
 		 			"        <value>"+name+"</value>\n"+
 		 			"      </name>\n"+
 		 			"    </info>\n"+
-		 			"    <topic ref='"+topicId+"_"+currentCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"_"+currentSubCategory.replace(/\s/g, "").replace(/\(|\)/g, "")+"'/>\n"+
+		 			"    <topic ref='"+tName+"'/>\n"+
 		 			"    <type ref='float'/>\n"+
 		 			"  </concept>\n";
 			 }
