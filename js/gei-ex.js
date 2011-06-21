@@ -748,7 +748,7 @@ gei.generateGEISliceXmlValue = function(text,dataType){
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
 				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
-				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"/g, "");
+				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
 				 if(columnName.length >= 64){
 					 columnName = columnName.substring(0,63);
 				 }
