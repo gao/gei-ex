@@ -237,26 +237,31 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 			 //the category
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0){
 				 currentCategory = row[1];
+				 //console.log("--00category--j="+j+":::"+currentCategory);
 			 } 
 			 
 			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
 			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 currentSubCategory = row[1];
+				 //console.log("--11currentSubCategory--j="+j+":::"+currentSubCategory);
 			 }
 			 
 			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
 				 currentSubCategory = currentCategory;
+				 //console.log("--22currentSubCategory--j="+j+":::"+currentSubCategory);
 			 }
 			 
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
-			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
+				 //console.log("--33currentSubCategory--j="+j+":::"+currentSubCategory);
 			 }
 			 
 			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
 				 currentSubCategory = row[1];
+				 //console.log("--44currentSubCategory--j="+j+":::"+currentSubCategory);
 			 }
 			 
 		 }
@@ -346,7 +351,7 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 			 }
 			 
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
-			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
 			 }
 			 
@@ -586,7 +591,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 }
 			 
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
-			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
 				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
@@ -623,7 +628,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 
 		 }
 		 
-		 topic_str = topic_str +"</topic>\n</topics>\n"
+		 topic_str = topic_str +"  </topic>\n</topic>\n</topics>\n"
  
 		 return topic_str;
 	 }
@@ -676,7 +681,7 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 		 			"  <concept id='"+columnName+"'>\n"+
 		 			"    <info>\n"+
 		 			"      <name>\n"+
-		 			"        <value>"+name.replace(/\,|\"/g, "")+"</value>\n"+
+		 			"        <value>"+name.replace(/\"/g, "")+"</value>\n"+
 		 			"      </name>\n"+
 		 			"    </info>\n"+
 		 			"    <topic ref='"+tName+"'/>\n"+
@@ -700,7 +705,7 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 			 }
 			 
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
-			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
 			 }
 			 
@@ -774,7 +779,7 @@ gei.generateGEISliceXmlValue = function(text,dataType){
 			 }
 			 
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
-			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow3) == 0){
+			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
 			 }
 			 
