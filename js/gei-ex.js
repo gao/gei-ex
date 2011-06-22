@@ -426,6 +426,7 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 				 yearArr.push(firstRow[t]);
 			 } 
 		 }
+		 yearArr = yearArr.slice(0,yearArr.length-1)
 		 
 		 if(dataType == "gei-states-new"){
 			 text_array = text_array.slice(134,(text_array.length-1));
@@ -466,15 +467,17 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 		 //here bulid the data line	 
 		 var metric = "";
 		 var startAt = 0;
+		 var startAt1 = 0;
+		 var startAt2 = 0;
 		 for(var a = 1; a < text_array.length; a++){
-			 console.log("----a:"+a);
+			 //console.log("----a:"+a);
 			 var rowNow = text_array[a];
 			 var preRowNow = text_array[a-1];
 			 var nextRowNow = text_array[a+1];
 			 //the data line 
 			 if(notNullValueNum(rowNow) > 1){ 
 				 if(metric == "Household energy bill savings (2009 $/household/year)"){
-					 for(var i = 0;i < 1; i++ ){
+					 for(var i = 0;i < yearArr.length; i++ ){
 						 var yearVal = yearArr[i];
 						 if(yearVal != ""){
 							 var newLine = new Array();
@@ -496,34 +499,55 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 							 den_array.push(newLine);
 						 }
 					 }
-				 }else{
-					 console.log("---222222222222--yearArr.length:"+yearArr.length);
-					 console.log("---222222222222--startAt:"+startAt);
-					 for(var i = startAt; i < (1+startAt); i++ ){
-						 var yearVal = yearArr[i];
-						 if(yearVal != ""){
-							 startAt = i;
-							 var cur_arr = den_array[i+1];
-							 console.log("cur_arr::::"+cur_arr);
-							 if(typeof(cur_arr) != "undefined"){
-								 var value = rowNow[i+2];
-								 if(value == "" || value == null){
-									 value = 0 ;
-								 }else{
-									 value = formatValue(rowNow[i+2]);
-								 }
-								 cur_arr.push(value);
+				 }else if(metric == "Household energy bill savings (2009 $/capita/year)"){
+					 for(var i = startAt; i < (yearArr.length+startAt); i++ ){
+						 var cur_arr = den_array[i+1];
+						 if(typeof(cur_arr) != "undefined"){
+							 var value = rowNow[i+2-startAt];
+							 if(typeof(value) == "undefined" || value == ""){
+								 value = 0 ;
+							 }else{
+								 value = formatValue(value);
 							 }
-							 
+							 cur_arr.push(value);
 						 }
 					 }
+					 startAt = startAt + yearArr.length;
+				 }else if(metric == "GDP impact (% relative to BAU)"){
+					 for(var i = startAt1; i < (yearArr.length+startAt1); i++ ){
+						 var cur_arr = den_array[i+1];
+						 if(typeof(cur_arr) != "undefined"){
+							 var value = rowNow[i+2-startAt1];
+							 if(typeof(value) == "undefined" || value == ""){
+								 value = 0 ;
+							 }else{
+								 value = formatValue(value);
+							 }
+							 cur_arr.push(value);
+						 }
+					 }
+					 startAt1 = startAt1 + yearArr.length;
+				 }else if(metric == "Jobs impact (% relative to BAU)"){
+					 for(var i = startAt2; i < (yearArr.length+startAt2); i++ ){
+						 var cur_arr = den_array[i+1];
+						 if(typeof(cur_arr) != "undefined"){
+							 var value = rowNow[i+2-startAt2];
+							 if(typeof(value) == "undefined" || value == ""){
+								 value = 0 ;
+							 }else{
+								 value = formatValue(value);
+							 }
+							 cur_arr.push(value);
+						 }
+					 }
+					 startAt2 = startAt2 + yearArr.length;
 				 }
 			 }
 			 
 			//preRow is empty ,current row is one data,next row is data line,it is a Metric
 			 if(notNullValueNum(preRowNow) == 0 && notNullValueNum(rowNow) == 1 && notNullValueNum(nextRowNow) > 1){
 				 metric = rowNow[1];
-				 console.log("-----metric:"+metric);
+				 //console.log("-----metric:"+metric);
 			 }
 		 }
 
