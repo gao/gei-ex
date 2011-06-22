@@ -400,6 +400,143 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 	 }
 };
 
+//generate the GEIStates new format 
+gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
+	 if (text == ""){
+		 return null;
+	 }else{ 
+		 var den_array = new Array();
+		 var text_array = new Array();   
+		 text_array = bulidTextArrayFromCSV(text);   
+
+		 //change the format to Denormalized
+		 var firsLine = [];
+		 var firstRow = [];
+		 var yearArr = [];
+		 
+		 if(text_array.length > 1){
+			 //sometimes in the csv file the first row have nothing or only have S1 or S5,this is no use
+			 //so the first row should be the file title
+			 if(notNullValueNum(text_array[0]) == 0 || text_array[0][0] != ""){
+				 firstRow = text_array[1];
+			 }else{
+				 firstRow = text_array[0];
+			 }
+			 for(var t = 2; t < firstRow.length; t++){
+				 yearArr.push(firstRow[t]);
+			 } 
+		 }
+		 
+		 if(dataType == "gei-states-new"){
+			 text_array = text_array.slice(134,(text_array.length-1));
+		 }
+		 
+		 //here bulid first line
+		 firsLine.push("Scenario");
+		 firsLine.push("Year[type=date;format=y]");
+		 firsLine.push("State");
+		 for(var j = 1; j < text_array.length; j++){
+			 var preRow = text_array[j-1];
+			 var row = text_array[j];
+			 var nextRow = text_array[j+1];
+			 
+			 //the null line
+			 if(notNullValueNum(row) == 0){
+				 continue;
+			 }
+			 
+			 //the data line 
+			 if(notNullValueNum(row) > 1){
+				 continue; 
+			 }
+
+			 //preRow is empty ,current row is one data,next row is data line,it is a Metric
+			 if(notNullValueNum(preRow) == 0 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
+				 var name = row[1];
+				 name = name.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 if(name.length >= 64){
+					 name = name.substring(0,63);
+				 }
+				 firsLine.push(name+"[type=float]");
+			 }
+			 
+		 }
+		 den_array.push(firsLine);
+		 
+		 //here bulid the data line	 
+		 var metric = "";
+		 var startAt = 0;
+		 for(var a = 1; a < text_array.length; a++){
+			 console.log("----a:"+a);
+			 var rowNow = text_array[a];
+			 var preRowNow = text_array[a-1];
+			 var nextRowNow = text_array[a+1];
+			 //the data line 
+			 if(notNullValueNum(rowNow) > 1){ 
+				 if(metric == "Household energy bill savings (2009 $/household/year)"){
+					 for(var i = 0;i < 1; i++ ){
+						 var yearVal = yearArr[i];
+						 if(yearVal != ""){
+							 var newLine = new Array();
+							 newLine.push(frtColumnName);
+							 newLine.push(yearVal);
+							 
+							 var state = rowNow[1];
+							 newLine.push(state);
+							 
+							 var value = rowNow[i+2];
+							 if(value == "" || value == null){
+								 value = 0 ;
+							 }else{
+								 value = formatValue(rowNow[i+2]);
+							 }
+							 newLine.push(value);
+							 
+							 //newLine.push("\n");
+							 den_array.push(newLine);
+						 }
+					 }
+				 }else{
+					 console.log("---222222222222--yearArr.length:"+yearArr.length);
+					 console.log("---222222222222--startAt:"+startAt);
+					 for(var i = startAt; i < (1+startAt); i++ ){
+						 var yearVal = yearArr[i];
+						 if(yearVal != ""){
+							 startAt = i;
+							 var cur_arr = den_array[i+1];
+							 console.log("cur_arr::::"+cur_arr);
+							 if(typeof(cur_arr) != "undefined"){
+								 var value = rowNow[i+2];
+								 if(value == "" || value == null){
+									 value = 0 ;
+								 }else{
+									 value = formatValue(rowNow[i+2]);
+								 }
+								 cur_arr.push(value);
+							 }
+							 
+						 }
+					 }
+				 }
+			 }
+			 
+			//preRow is empty ,current row is one data,next row is data line,it is a Metric
+			 if(notNullValueNum(preRowNow) == 0 && notNullValueNum(rowNow) == 1 && notNullValueNum(nextRowNow) > 1){
+				 metric = rowNow[1];
+				 console.log("-----metric:"+metric);
+			 }
+		 }
+
+		 
+		 var den_str = "";
+		 for(var a = 0; a < den_array.length; a++){
+			 den_str = den_str + den_array[a] + "\n";
+		 }
+ 
+		 return den_str;
+	 }
+};
+
 //generate the GEIStates format
 gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 	 if (text == ""){

@@ -29,6 +29,8 @@ snow.ui.registerComponent("mainScreen",
 					scdTextVal = gei.generateGEIStatesValue(frtTextVal,frtColumnName,dataType);
 				}else if(dataType == "gei-national"){
 					scdTextVal = gei.generateGEINationalValue(frtTextVal,frtColumnName,dataType);
+				}else if(dataType == "gei-states-new"){
+					scdTextVal = gei.generateGEIStatesNewValue(frtTextVal,frtColumnName,dataType);
 				}else{
 					scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,dataType);
 				}
@@ -151,6 +153,9 @@ snow.ui.registerComponent("mainScreen",
 		-->
 		<div class="genDiv motionOrRaw" data-obj_type="gei-national">
 			<button class="generateButton"> GEI-National Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-states-new">
+			<button class="generateButton"> GEI-States Format >> </button>
 		</div>
 		<div class="genDiv motionOrRaw" data-obj_type="gei-national-topic-xml">
 			<button class="generateXmlButton">National Topic Xml >></button>
