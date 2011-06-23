@@ -305,8 +305,10 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 		 }		 
 		 
 		 if(dataType == "gei-national"){
-			 text_array = text_array.slice(0,135)
+			 //old csv is 135
+			 text_array = text_array.slice(0,147)
 		 }
+		 //console.log(text_array);
 		 
 		 //bulid the first column
 		 firsLine.push("Scenario");
@@ -433,9 +435,10 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 		 yearArr = yearArr.slice(0,yearArr.length-1)
 		 
 		 if(dataType == "gei-states-new"){
-			 text_array = text_array.slice(134,(text_array.length-1));
+			 //old data is 135
+			 text_array = text_array.slice(146,(text_array.length-1));
 		 }
-		 
+		 //console.log(text_array);
 		 //here bulid first line
 		 firsLine.push("Scenario");
 		 firsLine.push("Year[type=date;format=y]");
@@ -480,7 +483,10 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 			 var nextRowNow = text_array[a+1];
 			 //the data line 
 			 if(notNullValueNum(rowNow) > 1){ 
-				 if(metric == "Household energy bill savings (2009 $/household/year)"){
+				 //console.log("--data line---");
+				 //old one is : Household energy bill savings (2009 $/household/year)                                       
+				 if(metric == "Household Energy Bill Savings (2009 $/household/year)"){
+					 //console.log("--11111111---");
 					 for(var i = 0;i < yearArr.length; i++ ){
 						 var yearVal = yearArr[i];
 						 if(yearVal != ""){
@@ -492,7 +498,7 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 							 newLine.push(state);
 							 
 							 var value = rowNow[i+2];
-							 if(value == "" || value == null){
+							 if(typeof(value) == "undefined" || value == ""){
 								 value = 0 ;
 							 }else{
 								 value = formatValue(rowNow[i+2]);
@@ -516,7 +522,8 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 						 }
 					 }
 					 startAt = startAt + yearArr.length;
-				 }else if(metric == "GDP impact (% relative to BAU)"){
+				 }else if(metric == "GDP Impact (% Relative to BAU)"){
+					 //old one is : GDP impact (% relative to BAU)
 					 for(var i = startAt1; i < (yearArr.length+startAt1); i++ ){
 						 var cur_arr = den_array[i+1];
 						 if(typeof(cur_arr) != "undefined"){
@@ -530,7 +537,8 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 						 }
 					 }
 					 startAt1 = startAt1 + yearArr.length;
-				 }else if(metric == "Jobs impact (% relative to BAU)"){
+				 }else if(metric == "Jobs Impact (% Relative to BAU)"){
+					 //old one is : Jobs impact (% relative to BAU)
 					 for(var i = startAt2; i < (yearArr.length+startAt2); i++ ){
 						 var cur_arr = den_array[i+1];
 						 if(typeof(cur_arr) != "undefined"){
@@ -550,6 +558,7 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 			//preRow is empty ,current row is one data,next row is data line,it is a Metric
 			 if(notNullValueNum(preRowNow) == 0 && notNullValueNum(rowNow) == 1 && notNullValueNum(nextRowNow) > 1){
 				 metric = rowNow[1];
+				 //console.log("-------metric:"+metric);
 			 }
 		 }
 
@@ -605,7 +614,8 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 		 den_array.push(firsLine);
 		 
 		 if(dataType == "gei-states"){
-			 text_array = text_array.slice(134,(text_array.length-1));
+			 //old csv data is 135
+			 text_array = text_array.slice(147,(text_array.length-1));
 		 }
 		 
 		 //name is the Metric
