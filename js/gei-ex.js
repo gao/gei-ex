@@ -91,7 +91,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 		 
 		 
 		 if(dataType == "gei-main"){
-			 text_array = text_array.slice(0,(text_array.length-150))
+			 text_array = text_array.slice(0,147)
 		 }
 		 
 		 var currentCategory = "";
@@ -685,7 +685,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 		 text_array = bulidTextArrayFromCSV(text);   
 
 		 if(dataType == "gei-national-topic-xml"){
-			 text_array = text_array.slice(0,(text_array.length-150))
+			 text_array = text_array.slice(0,147);
 		 }
 		 
 		 var currentCategory = "";
@@ -819,7 +819,7 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 		 text_array = bulidTextArrayFromCSV(text);   
 
 		 if(dataType == "gei-national-concept-xml"){
-			 text_array = text_array.slice(0,(text_array.length-150))
+			 text_array = text_array.slice(0,147)
 		 }
 		 
 		 var currentCategory = "";
@@ -904,7 +904,7 @@ gei.generateGEISliceXmlValue = function(text,dataType){
 		 text_array = bulidTextArrayFromCSV(text);   
 
 		 if(dataType == "gei-national-slice-xml"){
-			 text_array = text_array.slice(0,(text_array.length-150));
+			 text_array = text_array.slice(0,147);
 		 }
 		 
 		 var currentCategory = "";
