@@ -275,7 +275,10 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 	 }
 };
 
-
+/*
+ * this method is to create the format for the GEI-National
+ * first column is : Scenario Year Name1 Name2 Name3 ......
+ */
 gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 	 if (text == ""){
 		 return null;
@@ -299,13 +302,11 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 			 for(var t = 2; t < firstRow.length; t++){
 				 yearArr.push(firstRow[t]);
 			 } 
-		 }
-		 
+		 }		 
 		 
 		 if(dataType == "gei-national"){
 			 text_array = text_array.slice(0,135)
 		 }
-		 
 		 
 		 //bulid the first column
 		 firsLine.push("Scenario");
@@ -360,7 +361,7 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 				 currentSubCategory = row[1];
 			 } 
 		 }		 
-		 firsLine.push("\n");
+		 //firsLine.push("\n");
 		 den_array.push(firsLine);
 		 
 		 //here bulid the data line
@@ -385,7 +386,7 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 					 }
 				 }
 				 
-				 newLine.push("\n");
+				 //newLine.push("\n");
 				 den_array.push(newLine);
 			 }
 		 }
@@ -393,14 +394,17 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 		 
 		 var den_str = "";
 		 for(var a = 0; a < den_array.length; a++){
-			 den_str = den_str + den_array[a];
+			 den_str = den_str + den_array[a] + "\n";
 		 }
   
 		 return den_str;
 	 }
 };
 
-//generate the GEIStates new format 
+/**
+ * generate the GEIStates new format 
+ * first column is : Scenario Year State Metric1 Metric2 Metric3 Metric4
+ */
 gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 	 if (text == ""){
 		 return null;
@@ -494,7 +498,6 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 								 value = formatValue(rowNow[i+2]);
 							 }
 							 newLine.push(value);
-							 
 							 //newLine.push("\n");
 							 den_array.push(newLine);
 						 }
@@ -547,7 +550,6 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 			//preRow is empty ,current row is one data,next row is data line,it is a Metric
 			 if(notNullValueNum(preRowNow) == 0 && notNullValueNum(rowNow) == 1 && notNullValueNum(nextRowNow) > 1){
 				 metric = rowNow[1];
-				 //console.log("-----metric:"+metric);
 			 }
 		 }
 
@@ -561,7 +563,10 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 	 }
 };
 
-//generate the GEIStates format
+/**
+ * generate the GEIStates format
+ * first column is : Scenario Metric State Year Value
+ */
 gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 	 if (text == ""){
 		 return null;
@@ -596,7 +601,7 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 			 firsLine.push("Year[type=date;format=y]");
 			 firsLine.push("Value[type=float]");
 		 }
-		 firsLine.push("\n");
+		 //firsLine.push("\n");
 		 den_array.push(firsLine);
 		 
 		 if(dataType == "gei-states"){
@@ -634,7 +639,7 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 							 }
 							 newLine.push(yearArr[k-2]);
 							 newLine.push(formatValue(row[k]));
-							 newLine.push("\n");
+							 //newLine.push("\n");
 							 den_array.push(newLine);
 						 }
 					 }
@@ -649,7 +654,7 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 		 }
 		 var den_str = "";
 		 for(var a = 0; a < den_array.length; a++){
-			 den_str = den_str + den_array[a];
+			 den_str = den_str + den_array[a] + "\n";
 		 }
  
 		 return den_str;
@@ -1039,6 +1044,11 @@ function notNullValueNum(textArray){
 	return num;
 }
 
+/**
+ * format the value when we read from the csv,sometimes it have , " % and () 
+ * @param rVal
+ * @return
+ */
 function formatValue(rVal){
 	var val = "";
 	 //first remove the blank,comma and ",here need float
