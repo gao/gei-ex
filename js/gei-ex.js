@@ -282,7 +282,7 @@ gei.generateTypeValue = function(text,frtColumnName,dataType){
 gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 	 if (text == ""){
 		 return null;
-	 }else{ 
+	 }else{
 		 var den_array = new Array();
 		 var text_array = new Array();   
 		 text_array = bulidTextArrayFromCSV(text);   
@@ -330,11 +330,10 @@ gei.generateGEINationalValue = function(text,frtColumnName,dataType){
 			 //the data line 
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
-				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
-				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
-				 if(columnName.length >= 64){
-					 columnName = columnName.substring(0,63);
-				 }
+				 var cuCa = currentCategory.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var cuSubCa = currentSubCategory.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var cuNa = name.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var columnName = cuCa.substring(0,15)+"_"+cuSubCa.substring(0,15)+"_"+cuNa.substring(0,25);
 				 firsLine.push(columnName+"[type=float]");
 			 }
 			 
@@ -461,7 +460,7 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 			 //preRow is empty ,current row is one data,next row is data line,it is a Metric
 			 if(notNullValueNum(preRow) == 0 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 var name = row[1];
-				 name = name.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 name = name.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(name.length >= 64){
 					 name = name.substring(0,63);
 				 }
@@ -717,7 +716,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 				 }
 				 currentCategory = row[1];
 				 var tName =  topicId+"_"+currentCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -734,7 +733,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 currentSubCategory = row[1];
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -752,7 +751,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
 				 currentSubCategory = currentCategory;
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -770,7 +769,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -788,7 +787,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
 				 currentSubCategory = row[1];
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -842,14 +841,13 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 			 //the data line 
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
-				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
-				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
-				 if(columnName.length >= 64){
-					 columnName = columnName.substring(0,63);
-				 }
+				 var cuCa = currentCategory.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var cuSubCa = currentSubCategory.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var cuNa = name.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var columnName = cuCa.substring(0,15)+"_"+cuSubCa.substring(0,15)+"_"+cuNa.substring(0,25);
 				 
 				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
+				 tName = tName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
@@ -928,11 +926,10 @@ gei.generateGEISliceXmlValue = function(text,dataType){
 			 //the data line 
 			 if(notNullValueNum(row) > 1){
 				 var name = row[1];
-				 var columnName = currentCategory+"_"+currentSubCategory+"_"+name;
-				 columnName = columnName.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%/g, "");
-				 if(columnName.length >= 64){
-					 columnName = columnName.substring(0,63);
-				 }
+				 var cuCa = currentCategory.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var cuSubCa = currentSubCategory.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var cuNa = name.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
+				 var columnName = cuCa.substring(0,15)+"_"+cuSubCa.substring(0,15)+"_"+cuNa.substring(0,25);
 				 
 				
 				 slice_str = slice_str +
