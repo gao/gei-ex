@@ -11,6 +11,10 @@ gei.type = {
 	}
 }
 
+gei.subCat = ["GDP","Jobs","Energy prices","Electricity","Natural Gas","Gasoline","Fossil Fuel Consumption (quadrillion BTU's)",
+             "Fossil Fuel Savings","Emissions (GT CO2)","Emissions Relative to BAU","Transport","LDV New Sales (millions)",
+             "LDV Stock (millions)","HDV/MDV New Sales (millions)","HDV/MDV Stock (millions)","Production TWh","Clean Capacity GW"];
+
 //generate the dataType format
 gei.generateTypeValue = function(text,frtColumnName,dataType){
 	 if (text == ""){
@@ -810,7 +814,7 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 };
 
 //generate the part of Concept xml format
-gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
+gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 	 if (text == ""){
 		 return null;
 	 }else{ 
@@ -821,6 +825,54 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 		 if(dataType == "gei-national-concept-xml"){
 			 text_array = text_array.slice(0,147)
 		 }
+		 
+		 var map = {} ;
+		 if(metaData != ""){
+			 var metaData_array = new Array();   
+			 metaData_array = bulidTextArrayFromCSV(metaData); 
+			 var curSubCat = "";
+			 var curSucCatArr = new Array();  
+			 var trasportTime = 0 ;
+			 
+			 if(metaData_array.length > 0 ){
+				 for(var i = 2; i < metaData_array.length; i++){
+					 var metaDataRow = metaData_array[i];
+					 
+					 //here find the current subcategory
+					 if(notNullValueNum(metaDataRow) == 1){
+						 var nameValue = metaDataRow[1].replace(/(^\s*)|(\s*$)/g,"");
+						 if(gei.subCat.indexOf(nameValue) != -1){
+							 //here because some name is same as the subcategory
+							 if(curSucCatArr.indexOf(nameValue)  == -1){
+								 if(nameValue == "Transport" ){
+									 trasportTime = trasportTime + 1;
+									 if(trasportTime == 3){
+										 curSubCat = nameValue;
+										 curSucCatArr.push(curSubCat);
+									 }
+								 }else{
+									 curSubCat = nameValue;
+									 curSucCatArr.push(curSubCat);
+								 }
+							 }
+							 
+						 }
+					 }
+					 
+					 //here build the label and description
+					 if(notNullValueNum(metaDataRow) > 1){
+						 //sometime the name will be same,so here we build the name use curSubCat+Name
+						 var nameVal = metaDataRow[1];
+						 nameVal = curSubCat + "_" + nameVal;
+						 var lableVal = metaDataRow[2];
+						 var descriptionVal = metaDataRow[3];
+
+						 map[nameVal] = {label:lableVal,descrption:descriptionVal};
+					 }
+				 }
+			 }
+		 }
+		 //console.log(map);
 		 
 		 var currentCategory = "";
 		 var currentSubCategory = "";
@@ -851,16 +903,54 @@ gei.generateGEIConceptXmlValue = function(text,topicId,dataType){
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
-				 concept_str = concept_str +
-		 			"  <concept id='"+columnName+"'>\n"+
-		 			"    <info>\n"+
-		 			"      <name>\n"+
-		 			"        <value>"+name.replace(/\"/g, "")+"</value>\n"+
-		 			"      </name>\n"+
-		 			"    </info>\n"+
-		 			"    <topic ref='"+tName+"'/>\n"+
-		 			"    <type ref='float'/>\n"+
-		 			"  </concept>\n";
+				 //console.log("-----"+currentSubCategory+"-----");
+				 var cscVal = currentSubCategory.replace(/(^\s*)|(\s*$)/g,"");
+				 if(typeof(map[cscVal + "_" + name]) != "undefined"){
+					 var label = map[cscVal + "_" + name].label;
+					 var description = map[cscVal + "_" + name].descrption;
+					 
+					 var con_part = "  <concept id='"+columnName+"'>\n"+
+			 						"    <info>\n"+
+			 						"      <name>\n";
+					 //here build the lable
+					 if(label != ""){
+						 con_part = con_part +
+						 			"        <value>"+label.replace(/\"/g, "")+"</value>\n"+
+						 			"      </name>\n";
+					 } else {
+						 con_part = con_part +
+				 					"        <value>"+name.replace(/\"/g, "")+"</value>\n"+
+				 					"      </name>\n";
+					 }
+					 
+					 //here build the description
+					 if(description != ""){
+						 con_part = con_part +
+						 			"      <description>\n"+
+						 			"        <value>"+description+"</value>\n"+
+						 			"      </description>\n";
+					 }
+					 
+					 con_part = con_part +
+							 	"    </info>\n"+
+					 			"    <topic ref='"+tName+"'/>\n"+
+					 			"    <type ref='float'/>\n"+
+					 			"  </concept>\n";
+					 
+					 concept_str = concept_str + con_part;
+				 }else{
+					 concept_str = concept_str +
+			 			"  <concept id='"+columnName+"'>\n"+
+			 			"    <info>\n"+
+			 			"      <name>\n"+
+			 			"        <value>"+name.replace(/\"/g, "")+"</value>\n"+
+			 			"      </name>\n"+
+			 			"    </info>\n"+
+			 			"    <topic ref='"+tName+"'/>\n"+
+			 			"    <type ref='float'/>\n"+
+			 			"  </concept>\n";
+				 }
+				 
 			 }
 
 			//the category

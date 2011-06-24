@@ -16,6 +16,7 @@ snow.ui.registerComponent("createXml",
 		
 		$element.sTouch(".generateXmlButton",function(e){
 			var $frtText = $("#frtText");
+			var $metaDataText = $("#metaDataText");
 			var $scdText = $("#scdText");
 			var $topicId = $("#topicId");
 			var $topicName = $("#topicName");
@@ -27,11 +28,12 @@ snow.ui.registerComponent("createXml",
 				alert("The Topic Id or Topic Name can not null!");
 			}else{
 				var frtTextVal = $frtText.val();
+				var metaDataVal = $metaDataText.val();
 				var scdTextVal = "";
 				if (dataType == "gei-national-topic-xml") {
 					scdTextVal = gei.generateGEITopicXmlValue(frtTextVal, topicId, topicName, dataType);
 				}else if (dataType == "gei-national-concept-xml") {
-					scdTextVal = gei.generateGEIConceptXmlValue(frtTextVal,topicId, dataType);
+					scdTextVal = gei.generateGEIConceptXmlValue(frtTextVal,metaDataVal,topicId, dataType);
 				}else if (dataType == "gei-national-slice-xml") {
 					scdTextVal = gei.generateGEISliceXmlValue(frtTextVal, dataType);
 				}
@@ -43,13 +45,14 @@ snow.ui.registerComponent("createXml",
 		$element.sTouch(".clearButton",function(e){
 			$("#frtText").text("");
 			$("#scdText").text("");
+			$("#metaDataText").text("");
 		});
 		
 		// --------- import the csv file --------- //
 		$element.sTouch(".import",function(e){
 			//start Read
-			var file = $("#file")[0].files[0];
-			var str = $("#file").val();
+			var file = $("#dataFile")[0].files[0];
+			var str = $("#dataFile").val();
 			var pos = str.lastIndexOf(".");
 			var lastname = str.substring(pos,str.length)
 			
@@ -70,6 +73,32 @@ snow.ui.registerComponent("createXml",
 			var fileString = evt.target.result;
 			var $frtText = $("#frtText");
 			$frtText.text("").val(fileString);
+		}
+		
+		$element.sTouch(".importMetaData",function(e){
+			//start Read
+			var file = $("#metaDataFile")[0].files[0];
+			var str = $("#metaDataFile").val();
+			var pos = str.lastIndexOf(".");
+			var lastname = str.substring(pos,str.length)
+			
+			if (lastname.toLowerCase()!=".csv"){
+				alert("The file type must be .csv");
+				return false;
+			}else{
+				if(file){
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = loadedMetaData;
+					reader.onerror = errorHandler;
+				}
+			}
+		});
+		
+		function loadedMetaData(evt) {  
+			var fileString = evt.target.result;
+			var $metaDataText = $("#metaDataText");
+			$metaDataText.text("").val(fileString);
 		}
 
 		function errorHandler(evt) {
@@ -92,13 +121,18 @@ snow.ui.registerComponent("createXml",
 		<br>
 		Topic Name:<input id="topicName" name="topicName" value=""/>
 		<br>
-		CSV File: <input id="file" type="file">
+		CSV Data File: <input id="dataFile" type="file">
 		          <button class="import">Import</button>
+		<br>
+		CSV MetaData File: <input id="metaDataFile" type="file">
+		          <button class="importMetaData">Import</button>
 	</div>
 
 	<div class="firstArea">
-		Input TextArea:</br>
-		<textarea id="frtText" cols="50" rows="25"></textarea>
+		Input Data TextArea:</br>
+		<textarea id="frtText" cols="50" rows="13"></textarea></br>
+		Input MetaData TextArea:</br>
+		<textarea id="metaDataText" cols="50" rows="13"></textarea>
 	</div>
 	
 	<div class="generate">
@@ -118,7 +152,7 @@ snow.ui.registerComponent("createXml",
 	
 	<div class="sencondArea">
 		Output TextArea:</br>
-		<textarea id="scdText" cols="50" rows="25"></textarea>
+		<textarea id="scdText" cols="50" rows="27"></textarea>
 	</div>
 </div>	
 </script>
