@@ -1,0 +1,140 @@
+<script type="text/javascript">
+snow.ui.registerComponent("createCsv", 
+	{
+	    parent: "#mainContent",
+		unique: true,
+		emptyParent: true
+	}, 
+	{
+	build: function(){
+		var $e = $("#tmpl-mainScreenCsv").render({});
+		return $e;
+	}, 
+	postDisplay: function(){
+		var component = this;
+		var $element = this.$element;
+		
+		$element.sTouch(".generateButton",function(e){
+			var $frtText = $("#frtText");
+			var $scdText = $("#scdText");
+			var $frtColumn = $("#frtColumnName");
+			var dataType = $(this).closest(".motionOrRaw").attr("data-obj_type");
+			
+			var frtColumnName = $frtColumn.val();
+			if(frtColumnName == ""){
+				alert("The First Column Name can not null!");
+			}else{
+				var frtTextVal = $frtText.val();
+				var scdTextVal = "";
+				if(dataType == "gei-states"){
+					scdTextVal = gei.generateGEIStatesValue(frtTextVal,frtColumnName,dataType);
+				}else if(dataType == "gei-national"){
+					scdTextVal = gei.generateGEINationalValue(frtTextVal,frtColumnName,dataType);
+				}else if(dataType == "gei-states-new"){
+					scdTextVal = gei.generateGEIStatesNewValue(frtTextVal,frtColumnName,dataType);
+				}else{
+					scdTextVal = gei.generateTypeValue(frtTextVal,frtColumnName,dataType);
+				}
+
+				$scdText.text("").val(scdTextVal);
+			}
+		});
+		
+		$element.sTouch(".clearButton",function(e){
+			$("#frtText").text("");
+			$("#scdText").text("");
+		});
+		
+		// --------- import the csv file --------- //
+		$element.sTouch(".import",function(e){
+			//start Read
+			var file = $("#file")[0].files[0];
+			var str = $("#file").val();
+			var pos = str.lastIndexOf(".");
+			var lastname = str.substring(pos,str.length)
+			
+			if (lastname.toLowerCase()!=".csv"){
+				alert("The file type must be .csv");
+				return false;
+			}else{
+				if(file){
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = loaded;
+					reader.onerror = errorHandler;
+				}
+			}
+		});
+		
+		function loaded(evt) {  
+			var fileString = evt.target.result;
+			var $frtText = $("#frtText");
+			$frtText.text("").val(fileString);
+		}
+
+		function errorHandler(evt) {
+			if(evt.target.error.name == "NOT_READABLE_ERR") {
+				alert("The file could not be read");
+			}
+		}
+		// --------- /import the csv file --------- //
+		
+	}
+});
+
+</script>
+
+<script id="tmpl-mainScreenCsv" type="text/html">
+<div class="mainScreen">
+	<div class="frtColumnName">
+		<b>This is for create CSV file</b>:<br>
+		First Column Name:<input id="frtColumnName" name="frtColumnName" value=""/>
+		<br>
+		CSV File: <input id="file" type="file">
+		          <button class="import">Import</button>
+	</div>
+
+	<div class="firstArea">
+		Input TextArea:</br>
+		<textarea id="frtText" cols="50" rows="25"></textarea>
+	</div>
+	
+	<div class="generate">
+		<div class="motionOrRaw" data-obj_type="motion">
+			<button class="generateButton"> Motion Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="raw">
+			<button class="generateButton"> Raw Format >> </button>
+		</div>
+		<!-- 
+		<div class="genDiv motionOrRaw" data-obj_type="type1">
+			<button class="generateButton"> Type1 Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="type2">
+			<button class="generateButton"> Type2 Format >> </button>
+		</div>
+		
+		<div class="genDiv motionOrRaw" data-obj_type="gei-main">
+			<button class="generateButton"> GEI-Main Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-states">
+			<button class="generateButton"> GEI-States Format >> </button>
+		</div>
+		-->
+		<div class="genDiv motionOrRaw" data-obj_type="gei-national">
+			<button class="generateButton"> GEI-National Format >> </button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-states-new">
+			<button class="generateButton"> GEI-States Format >> </button>
+		</div>
+		<div class="genDiv">
+			<button class="clearButton"> Clear All Data </button>
+		</div>
+	</div>
+	
+	<div class="sencondArea">
+		Output TextArea:</br>
+		<textarea id="scdText" cols="50" rows="25"></textarea>
+	</div>
+</div>	
+</script>

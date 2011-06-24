@@ -1,0 +1,124 @@
+<script type="text/javascript">
+snow.ui.registerComponent("createXml", 
+	{
+	    parent: "#mainContent",
+		unique: true,
+		emptyParent: true
+	}, 
+	{
+	build: function(){
+		var $e = $("#tmpl-mainScreenXml").render({});
+		return $e;
+	}, 
+	postDisplay: function(){
+		var component = this;
+		var $element = this.$element;
+		
+		$element.sTouch(".generateXmlButton",function(e){
+			var $frtText = $("#frtText");
+			var $scdText = $("#scdText");
+			var $topicId = $("#topicId");
+			var $topicName = $("#topicName");
+			var dataType = $(this).closest(".motionOrRaw").attr("data-obj_type");
+			
+			var topicId = $topicId.val();
+			var topicName = $topicName.val();
+			if(topicId == "" || topicName == ""){
+				alert("The Topic Id or Topic Name can not null!");
+			}else{
+				var frtTextVal = $frtText.val();
+				var scdTextVal = "";
+				if (dataType == "gei-national-topic-xml") {
+					scdTextVal = gei.generateGEITopicXmlValue(frtTextVal, topicId, topicName, dataType);
+				}else if (dataType == "gei-national-concept-xml") {
+					scdTextVal = gei.generateGEIConceptXmlValue(frtTextVal,topicId, dataType);
+				}else if (dataType == "gei-national-slice-xml") {
+					scdTextVal = gei.generateGEISliceXmlValue(frtTextVal, dataType);
+				}
+
+				$scdText.text("").val(scdTextVal);
+			}
+		});
+		
+		$element.sTouch(".clearButton",function(e){
+			$("#frtText").text("");
+			$("#scdText").text("");
+		});
+		
+		// --------- import the csv file --------- //
+		$element.sTouch(".import",function(e){
+			//start Read
+			var file = $("#file")[0].files[0];
+			var str = $("#file").val();
+			var pos = str.lastIndexOf(".");
+			var lastname = str.substring(pos,str.length)
+			
+			if (lastname.toLowerCase()!=".csv"){
+				alert("The file type must be .csv");
+				return false;
+			}else{
+				if(file){
+					var reader = new FileReader();
+					reader.readAsText(file);
+					reader.onload = loaded;
+					reader.onerror = errorHandler;
+				}
+			}
+		});
+		
+		function loaded(evt) {  
+			var fileString = evt.target.result;
+			var $frtText = $("#frtText");
+			$frtText.text("").val(fileString);
+		}
+
+		function errorHandler(evt) {
+			if(evt.target.error.name == "NOT_READABLE_ERR") {
+				alert("The file could not be read");
+			}
+		}
+		// --------- /import the csv file --------- //
+		
+	}
+});
+
+</script>
+
+<script id="tmpl-mainScreenXml" type="text/html">
+<div class="mainScreen">
+	<div class="frtColumnName">
+		<b>This is for create XML file</b>:<br>
+		Topic Id :<input id="topicId" name="topicId" value=""/>
+		<br>
+		Topic Name:<input id="topicName" name="topicName" value=""/>
+		<br>
+		CSV File: <input id="file" type="file">
+		          <button class="import">Import</button>
+	</div>
+
+	<div class="firstArea">
+		Input TextArea:</br>
+		<textarea id="frtText" cols="50" rows="25"></textarea>
+	</div>
+	
+	<div class="generate">
+		<div class="genDiv motionOrRaw" data-obj_type="gei-national-topic-xml">
+			<button class="generateXmlButton">National Topic Xml >></button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-national-concept-xml">
+			<button class="generateXmlButton">National Concept Xml >></button>
+		</div>
+		<div class="genDiv motionOrRaw" data-obj_type="gei-national-slice-xml">
+			<button class="generateXmlButton">National Slice Xml >></button>
+		</div>
+		<div class="genDiv">
+			<button class="clearButton"> Clear All Data </button>
+		</div>
+	</div>
+	
+	<div class="sencondArea">
+		Output TextArea:</br>
+		<textarea id="scdText" cols="50" rows="25"></textarea>
+	</div>
+</div>	
+</script>
