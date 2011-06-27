@@ -11,8 +11,8 @@ gei.type = {
 	}
 }
 
-gei.subCat = ["GDP","Jobs","Energy prices","Electricity","Natural Gas","Gasoline","Fossil Fuel Consumption (quadrillion BTU's)",
-             "Fossil Fuel Savings","Emissions (GT CO2)","Emissions Relative to BAU","Transport","LDV New Sales (millions)",
+gei.subCat = ["GDP","Jobs","Energy prices","Electricity","Natural Gas","Gasoline","Fossil fuel consumption (quads)",
+             "Fossil Fuel Savings","Emissions","Emissions Relative to BAU","Transport","LDV New Sales (millions)",
              "LDV Stock (millions)","HDV/MDV New Sales (millions)","HDV/MDV Stock (millions)","Production TWh","Clean Capacity GW"];
 
 //generate the dataType format
@@ -836,13 +836,15 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 			 var curSubCat = "";
 			 var curSucCatArr = new Array();  
 			 var trasportTime = 0 ;
+			 var naturalGasTime = 0 ;
 			 
 			 if(metaData_array.length > 0 ){
 				 for(var i = 2; i < metaData_array.length; i++){
 					 var metaDataRow = metaData_array[i];
 					 
 					 //here find the current subcategory
-					 if(notNullValueNum(metaDataRow) == 1){
+					 //right now some category and subcategory also have lable
+					 if(notNullValueNum(metaDataRow) != 0){
 						 var nameValue = metaDataRow[1].replace(/(^\s*)|(\s*$)/g,"");
 						 if(gei.subCat.indexOf(nameValue) != -1){
 							 //here because some name is same as the subcategory
@@ -850,6 +852,12 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 								 if(nameValue == "Transport" ){
 									 trasportTime = trasportTime + 1;
 									 if(trasportTime == 3){
+										 curSubCat = nameValue;
+										 curSucCatArr.push(curSubCat);
+									 }
+								 }else if(nameValue == "Natural Gas" ){
+									 naturalGasTime = naturalGasTime + 1;
+									 if(naturalGasTime == 1){
 										 curSubCat = nameValue;
 										 curSucCatArr.push(curSubCat);
 									 }
@@ -862,20 +870,25 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 						 }
 					 }
 					 
+					 //console.log("------curSubCat:"+curSubCat);
+					 
 					 //here build the label and description
 					 if(notNullValueNum(metaDataRow) > 1){
 						 //sometime the name will be same,so here we build the name use curSubCat+Name
 						 var nameVal = metaDataRow[1];
-						 nameVal = curSubCat + "_" + nameVal;
+						 nameVal = curSubCat.replace(/(^\s*)|(\s*$)/g,"") + "_" + nameVal;
 						 var lableVal = metaDataRow[2];
 						 var descriptionVal = metaDataRow[3];
-
-						 map[nameVal] = {label:lableVal,descrption:descriptionVal};
+						 var urlVal = metaDataRow[4];
+						 //sometimes the data file and the metadata file the later is not same,
+						 nameVal = nameVal.toLowerCase();
+						 map[nameVal] = {label:lableVal,descrption:descriptionVal,url:urlVal};
 					 }
 				 }
 			 }
 		 }
 		 //console.log(map);
+		 console.log("==========================================================");
 		 
 		 var currentCategory = "";
 		 var currentSubCategory = "";
@@ -906,17 +919,21 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
-				 //console.log("-----"+currentSubCategory+"-----");
+				 //console.log("-------------------------------------------");
 				 var cscVal = currentSubCategory.replace(/(^\s*)|(\s*$)/g,"");
-				 if(typeof(map[cscVal + "_" + name]) != "undefined"){
-					 var label = map[cscVal + "_" + name].label;
-					 var description = map[cscVal + "_" + name].descrption;
+				 var nameMapVal = cscVal + "_" + name;
+				 //sometimes the data file and the metadata file the later is not same,
+				 nameMapVal = nameMapVal.toLowerCase();
+				 if(typeof(map[nameMapVal]) != "undefined"){
+					 var label = map[nameMapVal].label;
+					 var description = map[nameMapVal].descrption;
+					 var url = map[nameMapVal].url;
 					 
 					 var con_part = "  <concept id='"+columnName+"'>\n"+
 			 						"    <info>\n"+
 			 						"      <name>\n";
 					 //here build the lable
-					 if(label != ""){
+					 if(label != "" && typeof(label) != "undefined"){
 						 con_part = con_part +
 						 			"        <value>"+label.replace(/\"/g, "")+"</value>\n"+
 						 			"      </name>\n";
@@ -927,11 +944,19 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 					 }
 					 
 					 //here build the description
-					 if(description != ""){
+					 if(description != "" && typeof(description) != "undefined"){
 						 con_part = con_part +
 						 			"      <description>\n"+
 						 			"        <value>"+description+"</value>\n"+
 						 			"      </description>\n";
+					 }
+					 
+					//here build the url
+					 if(url != "" && typeof(url) != "undefined"){
+						 con_part = con_part +
+						 			"      <url>\n"+
+						 			"        <value>"+url+"</value>\n"+
+						 			"      </url>\n";
 					 }
 					 
 					 con_part = con_part +
