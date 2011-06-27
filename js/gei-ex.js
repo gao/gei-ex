@@ -487,8 +487,9 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 			 //the data line 
 			 if(notNullValueNum(rowNow) > 1){ 
 				 //console.log("--data line---");
-				 //old one is : Household energy bill savings (2009 $/household/year)                                       
-				 if(metric == "Household Energy Bill Savings (2009 $/household/year)"){
+				 //old one is : Household energy bill savings (2009 $/household/year)    
+				 //sometime one is : Household Energy Bill Savings (2009 $/household/year))  
+				 if(metric == "Household energy bill savings (2009 $/household/year)"){
 					 //console.log("--11111111---");
 					 for(var i = 0;i < yearArr.length; i++ ){
 						 var yearVal = yearArr[i];
@@ -525,8 +526,9 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 						 }
 					 }
 					 startAt = startAt + yearArr.length;
-				 }else if(metric == "GDP Impact (% Relative to BAU)"){
+				 }else if(metric == "GDP impact (% relative to BAU)"){
 					 //old one is : GDP impact (% relative to BAU)
+					//sometime one is : GDP Impact (% Relative to BAU)
 					 for(var i = startAt1; i < (yearArr.length+startAt1); i++ ){
 						 var cur_arr = den_array[i+1];
 						 if(typeof(cur_arr) != "undefined"){
@@ -540,8 +542,9 @@ gei.generateGEIStatesNewValue = function(text,frtColumnName,dataType){
 						 }
 					 }
 					 startAt1 = startAt1 + yearArr.length;
-				 }else if(metric == "Jobs Impact (% Relative to BAU)"){
+				 }else if(metric == "Jobs impact (% relative to BAU)"){
 					 //old one is : Jobs impact (% relative to BAU)
+					 //sometime one is : Jobs Impact (% Relative to BAU)
 					 for(var i = startAt2; i < (yearArr.length+startAt2); i++ ){
 						 var cur_arr = den_array[i+1];
 						 if(typeof(cur_arr) != "undefined"){
