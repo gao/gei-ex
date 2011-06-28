@@ -788,7 +788,9 @@ gei.generateGEITopicXmlValue = function(text,metaData, topicId,topicName,dataTyp
 				 var topicNameVal = currentCategory;
 				 var mapK = topicNameVal.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
 				 if(typeof(map[mapK]) != "undefined"){
-					 topicNameVal = map[mapK].label;
+					 if(map[mapK].label != ""){
+						 topicNameVal = map[mapK].label;
+					 } 
 				 }
 				 
 				 topic_str = topic_str +
