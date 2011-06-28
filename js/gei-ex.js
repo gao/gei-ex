@@ -13,7 +13,7 @@ gei.type = {
 
 gei.subCat = ["GDP","Jobs","Energy prices","Electricity","Natural Gas","Gasoline","Fossil fuel consumption (quads)",
              "Fossil Fuel Savings","Emissions","Emissions Relative to BAU","Transport","LDV New Sales (millions)",
-             "LDV Stock (millions)","HDV/MDV New Sales (millions)","HDV/MDV Stock (millions)","Production TWh","Clean Capacity GW"];
+             "LDV Stock (millions)","HDV/MDV New Sales (millions)","HDV/MDV Stock (millions)","Production TWh","Clean capacity GW"];
 
 //generate the dataType format
 gei.generateTypeValue = function(text,frtColumnName,dataType){
@@ -846,6 +846,7 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 					 //right now some category and subcategory also have lable
 					 if(notNullValueNum(metaDataRow) != 0){
 						 var nameValue = metaDataRow[1].replace(/(^\s*)|(\s*$)/g,"");
+						 console.log("nameValue:"+nameValue);
 						 if(gei.subCat.indexOf(nameValue) != -1){
 							 //here because some name is same as the subcategory
 							 if(curSucCatArr.indexOf(nameValue)  == -1){
@@ -882,13 +883,14 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 						 var urlVal = metaDataRow[4];
 						 //sometimes the data file and the metadata file the later is not same,
 						 nameVal = nameVal.toLowerCase();
+						 //console.log("-----nameVal:"+nameVal);
 						 map[nameVal] = {label:lableVal,descrption:descriptionVal,url:urlVal};
 					 }
 				 }
 			 }
 		 }
 		 //console.log(map);
-		 console.log("==========================================================");
+		// console.log("==========================================================");
 		 
 		 var currentCategory = "";
 		 var currentSubCategory = "";
@@ -924,6 +926,7 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 				 var nameMapVal = cscVal + "_" + name;
 				 //sometimes the data file and the metadata file the later is not same,
 				 nameMapVal = nameMapVal.toLowerCase();
+				 //console.log("-----nameMapVal:"+nameMapVal);
 				 if(typeof(map[nameMapVal]) != "undefined"){
 					 var label = map[nameMapVal].label;
 					 var description = map[nameMapVal].descrption;
