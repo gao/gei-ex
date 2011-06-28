@@ -678,10 +678,67 @@ gei.generateGEIStatesValue = function(text,frtColumnName,dataType){
 };
 
 //generate the topic xml format
-gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
+gei.generateGEITopicXmlValue = function(text,metaData, topicId,topicName,dataType){
 	 if (text == ""){
 		 return null;
 	 }else{ 
+		 
+		 var map = {} ;
+		 if(metaData != ""){
+			 var metaData_array = new Array();   
+			 metaData_array = bulidTextArrayFromCSV(metaData); 
+			 var curSubCat = "";
+			 var curSucCatArr = new Array();  
+			 var trasportTime = 0 ;
+			 var naturalGasTime = 0 ;
+			 
+			 if(metaData_array.length > 0 ){
+				 for(var i = 2; i < metaData_array.length; i++){
+					 var metaDataRow = metaData_array[i];
+					 
+					 //here find the current subcategory
+					 //right now some category and subcategory also have lable
+					 if(notNullValueNum(metaDataRow) != 0){
+						 var nameValue = metaDataRow[1].replace(/(^\s*)|(\s*$)/g,"");
+						 //console.log("nameValue:"+nameValue);
+						 if(gei.subCat.indexOf(nameValue) != -1){
+							 //here because some name is same as the subcategory
+							 if(curSucCatArr.indexOf(nameValue)  == -1){
+								 if(nameValue == "Transport" ){
+									 trasportTime = trasportTime + 1;
+									 if(trasportTime == 3){
+										 curSubCat = nameValue;
+										 curSucCatArr.push(curSubCat);
+										 var mapKey = curSubCat.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
+										 var lableVal = metaDataRow[2];
+										 map[mapKey] = {label:lableVal};
+									 }
+								 }else if(nameValue == "Natural Gas" ){
+									 naturalGasTime = naturalGasTime + 1;
+									 if(naturalGasTime == 1){
+										 curSubCat = nameValue;
+										 curSucCatArr.push(curSubCat);
+										 var mapKey = curSubCat.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
+										 var lableVal = metaDataRow[2];
+										 map[mapKey] = {label:lableVal};
+									 }
+								 }else{
+									 curSubCat = nameValue;
+									 curSucCatArr.push(curSubCat);
+									 var mapKey = curSubCat.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
+									 var lableVal = metaDataRow[2];
+									 map[mapKey] = {label:lableVal};
+								 }
+							 }
+							 
+						 }
+					 }					 
+					 //console.log("------curSubCat:"+curSubCat);
+				 }
+			 }
+		 }
+		 //console.log(map);
+		 
 		 var topic_str = "<topics>\n<topic id='"+topicId+"'>\n"+
 		 				"  <info>\n"+
 		 				"    <name>\n"+
@@ -727,11 +784,18 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 				 if(tName.length >= 64){
 					 tName = tName.substring(0,63);
 				 }
+				 
+				 var topicNameVal = currentCategory;
+				 var mapK = topicNameVal.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
+				 if(typeof(map[mapK]) != "undefined"){
+					 topicNameVal = map[mapK].label;
+				 }
+				 
 				 topic_str = topic_str +
 				 			"  <topic id='"+tName+"'>\n"+
 				 			"    <info>\n"+
 				 			"      <name>\n"+
-				 			"        <value>"+currentCategory+"</value>\n"+
+				 			"        <value>"+topicNameVal+"</value>\n"+
 				 			"      </name>\n"+
 				 			"    </info>\n" ;
 			 } 
@@ -739,73 +803,26 @@ gei.generateGEITopicXmlValue = function(text,topicId,topicName,dataType){
 			 //preRow is empty or data line ,current row is one data,next row is data line,it is a sub-category
 			 if(notNullValueNum(preRow) != 1 && notNullValueNum(row) == 1 && notNullValueNum(nextRow) > 1){
 				 currentSubCategory = row[1];
-				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = formatValueForId(tName);
-				 if(tName.length >= 64){
-					 tName = tName.substring(0,63);
-				 }
-				 topic_str = topic_str +
-		 			"    <topic id='"+tName+"'>\n"+
-		 			"      <info>\n"+
-		 			"        <name>\n"+
-		 			"          <value>"+currentSubCategory+"</value>\n"+
-		 			"        </name>\n"+
-		 			"      </info>\n"+
-		 			"    </topic>\n";
+				 topic_str = createTopicPart(topic_str, topicId, currentCategory, currentSubCategory, map);
 			 }
 			 
 			 //current row is one data,next row is empty ,the next 2 row is data line,it's sub-category is the category
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) > 1){
 				 currentSubCategory = currentCategory;
-				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = formatValueForId(tName);
-				 if(tName.length >= 64){
-					 tName = tName.substring(0,63);
-				 }
-				 topic_str = topic_str +
-		 			"    <topic id='"+tName+"'>\n"+
-		 			"      <info>\n"+
-		 			"        <name>\n"+
-		 			"          <value>"+currentSubCategory+"</value>\n"+
-		 			"        </name>\n"+
-		 			"      </info>\n"+
-		 			"    </topic>\n";
+				 topic_str = createTopicPart(topic_str, topicId, currentCategory, currentSubCategory, map);
 			 }
 			 
 			 //current row is one data,the next 2 rows is empty,it's sub-category is the category 
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 0 && notNullValueNum(nextRow2) == 0){
 				 currentSubCategory = currentCategory;
-				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = formatValueForId(tName);
-				 if(tName.length >= 64){
-					 tName = tName.substring(0,63);
-				 }
-				 topic_str = topic_str +
-		 			"    <topic id='"+tName+"'>\n"+
-		 			"      <info>\n"+
-		 			"        <name>\n"+
-		 			"          <value>"+currentSubCategory+"</value>\n"+
-		 			"        </name>\n"+
-		 			"      </info>\n"+
-		 			"    </topic>\n";
+				 topic_str = createTopicPart(topic_str, topicId, currentCategory, currentSubCategory, map);
 			 }
 			 
 			 //current row is one data,the next 2 rows are one data,it's sub-category is the category,sheet 13
 			 if(notNullValueNum(row) == 1 && notNullValueNum(nextRow) == 1 && notNullValueNum(nextRow2) == 1){
 				 currentSubCategory = row[1];
-				 var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
-				 tName = formatValueForId(tName);
-				 if(tName.length >= 64){
-					 tName = tName.substring(0,63);
-				 }
-				 topic_str = topic_str +
-		 			"    <topic id='"+tName+"'>\n"+
-		 			"      <info>\n"+
-		 			"        <name>\n"+
-		 			"          <value>"+currentSubCategory+"</value>\n"+
-		 			"        </name>\n"+
-		 			"      </info>\n"+
-		 			"    </topic>\n";
+				 
+				 topic_str = createTopicPart(topic_str, topicId, currentCategory, currentSubCategory, map);
 			 }
 			 
 		 }
@@ -1207,3 +1224,36 @@ function formatValueForId(value){
 	var val = value.replace(/\s/g, "").replace(/\(|\)|\$|\-|\/|\+|\,|\"|\.|\%|\'/g, "");
 	return val;
 }
+
+/**
+ * create the part of the topic
+ * @return
+ */
+function createTopicPart(topic_str, topicId, currentCategory, currentSubCategory, map){
+	var topic_part = "";
+	var tName =  topicId+"_"+currentCategory+"_"+currentSubCategory;
+	tName = formatValueForId(tName);
+	
+	if(tName.length >= 64){
+		tName = tName.substring(0,63);
+	}
+	
+	var topicNameVal = currentSubCategory;
+	 var mapK = topicNameVal.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
+	 if(typeof(map[mapK]) != "undefined"){
+		 topicNameVal = map[mapK].label;
+	 }
+	
+	topic_part = topic_str +
+				"    <topic id='"+tName+"'>\n"+
+				"      <info>\n"+
+				"        <name>\n"+
+				"          <value>"+topicNameVal+"</value>\n"+
+				"        </name>\n"+
+				"      </info>\n"+
+				"    </topic>\n";
+	
+	return topic_part;
+}
+
+

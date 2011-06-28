@@ -31,7 +31,7 @@ snow.ui.registerComponent("createXml",
 				var metaDataVal = $metaDataText.val();
 				var scdTextVal = "";
 				if (dataType == "gei-national-topic-xml") {
-					scdTextVal = gei.generateGEITopicXmlValue(frtTextVal, topicId, topicName, dataType);
+					scdTextVal = gei.generateGEITopicXmlValue(frtTextVal, metaDataVal, topicId, topicName, dataType);
 				}else if (dataType == "gei-national-concept-xml") {
 					scdTextVal = gei.generateGEIConceptXmlValue(frtTextVal,metaDataVal,topicId, dataType);
 				}else if (dataType == "gei-national-slice-xml") {
