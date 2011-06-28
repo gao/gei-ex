@@ -1239,11 +1239,12 @@ function createTopicPart(topic_str, topicId, currentCategory, currentSubCategory
 	}
 	
 	var topicNameVal = currentSubCategory;
-	 var mapK = topicNameVal.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
-	 if(typeof(map[mapK]) != "undefined"){
-		 topicNameVal = map[mapK].label;
-	 }
-	
+	var mapK = currentSubCategory.replace(/(^\s*)|(\s*$)/g,"").toLowerCase();
+	if(typeof(map[mapK]) != "undefined"){
+		if(map[mapK].label != ""){
+			topicNameVal = map[mapK].label;
+		}
+	}
 	topic_part = topic_str +
 				"    <topic id='"+tName+"'>\n"+
 				"      <info>\n"+
