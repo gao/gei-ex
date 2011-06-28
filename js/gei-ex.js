@@ -846,7 +846,7 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 					 //right now some category and subcategory also have lable
 					 if(notNullValueNum(metaDataRow) != 0){
 						 var nameValue = metaDataRow[1].replace(/(^\s*)|(\s*$)/g,"");
-						 console.log("nameValue:"+nameValue);
+						 //console.log("nameValue:"+nameValue);
 						 if(gei.subCat.indexOf(nameValue) != -1){
 							 //here because some name is same as the subcategory
 							 if(curSucCatArr.indexOf(nameValue)  == -1){
