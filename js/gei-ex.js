@@ -969,7 +969,7 @@ gei.generateGEIConceptXmlValue = function(text,metaData,topicId,dataType){
 					 if(description != "" && typeof(description) != "undefined"){
 						 con_part = con_part +
 						 			"      <description>\n"+
-						 			"        <value>"+description+"</value>\n"+
+						 			"        <value>"+description.replace(/\"/g, "")+"</value>\n"+
 						 			"      </description>\n";
 					 }
 					 
